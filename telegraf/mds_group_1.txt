@@ -1,0 +1,39 @@
+# Add new MDS switches in format:
+#IP_Address,username,password,protocol,port,verify_ssl,timeout,polling_interval,description
+#
+# IP_Address,username,password are self-explanatory
+# 
+# protocol:http or https
+#
+# port: Check the output of 'show nxapi' on the switch. For example, from the
+# output below, use protocol as http and port 8080 OR use protocol as https
+# and port 8443
+### MDS9710-A# sh nxapi
+###
+###NX-API:       Enabled         Sandbox:      Enabled
+###HTTP Port:    8080            HTTPS Port:   8443
+#
+# verify_ssl: True or False
+#
+# http/https timeout in number of seconds
+#
+# Poll stats from the switch every polling_interval seconds
+#
+# description: Any string that helps in identifying the switch
+# This is not carried to the database
+#
+# All values are mandatory except description
+#
+# Add comma between items
+# Do not leave whitespaces between items or empty lines
+# Do not leave an empty line
+# Lines starting with # are ignored
+# Text between [] is location. At least one location is mandatory.
+[US]
+192.168.1.1,mtm,mtm123,https,8443,False,10,30,mds9710
+#[UK]
+#192.168.1.1,admin,passwd
+#[Italy]
+#192.168.1.1,admin,passwd
+#[China]
+#192.168.1.1,admin,passwd
