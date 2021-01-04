@@ -118,9 +118,6 @@ def parse_cmdline_arguments():
     parser.add_argument('-V', '--verify-only', dest='verify_only', \
             action='store_true', default=False, help='verify \
             connection and stats pull but do not print the stats')
-    parser.add_argument('-ct', '--connection-timeout', type=int,
-            dest='conn_timeout', default=45, help='Total timeout \
-            in seconds for login/auth and stats pull (Default:45s)')
     parser.add_argument('-v', '--verbose', dest='verbose', \
             action='store_true', default=False, help='warn and above')
     parser.add_argument('-vv', '--more_verbose', dest='more_verbose', \
@@ -133,7 +130,6 @@ def parse_cmdline_arguments():
     user_args['input_file'] = args.input_file
     user_args['output_format'] = args.output_format
     user_args['verify_only'] = args.verify_only
-    user_args['conn_timeout'] = args.conn_timeout
     user_args['verbose'] = args.verbose
     user_args['more_verbose'] = args.more_verbose
     user_args['most_verbose'] = args.most_verbose
@@ -231,9 +227,6 @@ def print_output_in_influxdb_lp(switch_ip, per_switch_stats_dict):
         switch_fields = switch_fields + ',sys_ver="' + \
                         per_switch_stats_dict['sys_ver'] + '"'
 
-    switch_fields = switch_fields + ',polling_interval=' + \
-                        per_switch_stats_dict['polling_interval']
-
     if 'switchname' in per_switch_stats_dict:
         switch_fields = switch_fields + ',switchname="' + \
                       per_switch_stats_dict['switchname'] + '"'
@@ -277,9 +270,6 @@ def print_output_in_influxdb_lp(switch_ip, per_switch_stats_dict):
                 port_fields = port_fields + sep + key + '="' + str(val) + '"'
             else:
                 port_fields = port_fields + sep + key + '=' + str(val)
-
-        port_fields = port_fields + ',polling_interval=' + \
-                      per_switch_stats_dict['polling_interval']
 
         if 'switchname' in per_switch_stats_dict:
             port_fields = port_fields + ',switchname="' + \
@@ -1039,20 +1029,18 @@ def get_switches():
                     continue
 
                 switch = line.split(',')
-                if len(switch) < 8:
+                if len(switch) < 7:
                     logger.warning('Line not in correct input format:'
                     'IP_Address,username,password,protocol,port,verify_ssl'
-                    ',timeout,polling_interval')
+                    ',timeout')
                     continue
                 switch_dict[switch[0]] = [switch[1], switch[2], switch[3],
-                                          switch[4], switch[5], switch[6],
-                                          switch[7]]
-                switch_dscr = switch[8] if len(switch) == 9 else ''
+                                          switch[4], switch[5], switch[6]]
+                switch_dscr = switch[7] if len(switch) == 8 else ''
                 logger.info('Added %s (%s) to switch dict, location:%s',
                             switch[0], switch_dscr, location)
                 stats_dict[switch[0]] = {}
                 stats_dict[switch[0]]['location'] = location
-                stats_dict[switch[0]]['polling_interval'] = switch[7]
                 stats_dict[switch[0]]['ports'] = {}
 
                 raw_api_stats[switch[0]] = {}

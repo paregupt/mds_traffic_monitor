@@ -1,5 +1,5 @@
 # Add new MDS switches in format:
-#IP_Address,username,password,protocol,port,verify_ssl,timeout,polling_interval,description
+#IP_Address,username,password,protocol,port,verify_ssl,timeout,description
 #
 # IP_Address,username,password are self-explanatory
 # 
@@ -17,8 +17,6 @@
 #
 # http/https timeout in number of seconds
 #
-# Poll stats from the switch every polling_interval seconds
-#
 # description: Any string that helps in identifying the switch
 # This is not carried to the database
 #
@@ -30,7 +28,7 @@
 # Lines starting with # are ignored
 # Text between [] is location. At least one location is mandatory.
 [US]
-192.168.1.1,mtm,mtm123,https,8443,False,10,30,mds9710
+192.168.1.1,mtm,mtm123,https,8443,False,10,mds9710
 #[UK]
 #192.168.1.1,admin,passwd
 #[Italy]

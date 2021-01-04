@@ -1,0 +1,3056 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 2,
+  "iteration": 1609728848673,
+  "links": [],
+  "panels": [
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 27,
+      "options": {
+        "content": "<table style=\"margin: 0px; padding: 0px; border: 1px; border-collapse: collapse;\" width=\"100%\">\n<tbody>\n<tr style=\"margin: 0px; padding: 0px;\">\n<td style=\"width: 15%; margin: 0px; padding: 0px; border: none;\" valign=\"middle\"><img id='cisco_logo' style=\"display: block; margin-left: auto; margin-right: auto;\" src='/public/img/mtm/cisco_logo.png' width=\"90\" />\n</td>\n<td style=\"width: 70%; margin: 0px; padding: 0px; border: none;\">\n<h2 style=\"text-align: center; margin: 2px;\"><span style=\"color: #0085FC;\"><strong>MTM - MDS Traffic Monitoring - Switchports</strong></span></h2>\n<h5 style=\"text-align: center; margin: 0px;\"><span style=\"color: #ff00ff;\">Detailed Switchport Monitoring</span></span></h5>\n</td>\n<td style=\"width: 15%; margin: 0px; border: none;\" valign=\"middle\"><img id='your_logo' style=\"display: block; margin-left: auto; margin-right: auto;\" src='/public/img/mtm/your_logo.png' alt=\"\" width=\"90\"/>\n</td>\n</tr>\n</tbody>\n</table>",
+        "mode": "html"
+      },
+      "pluginVersion": "7.3.6",
+      "targets": [
+        {
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "",
+      "transparent": true,
+      "type": "text"
+    },
+    {
+      "datasource": "$data_source",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Speed (G)"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "color-background"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "green",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Location"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Details of switches and switchports in ${__value.raw}",
+                    "url": "d/i56djUbMz/mtm-locations?orgId=1&var-location=${__value.raw}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Switch"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Details of switch ${__value.raw} and its ports",
+                    "url": "d/WoIYF-xGz/mtm-mds-switch-monitoring?orgId=1&var-switch=${__value.raw}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Port"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": null
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 40,
+      "interval": "[[min_interval]]",
+      "options": {
+        "frameIndex": 0,
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "7.3.6",
+      "targets": [
+        {
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT location as Location, description as \"Description\", oper_state as \"Operational State\", oper_mode as \"Oper Mode\", oper_speed as \"Speed (G)\", pc as \"Member of Port-Channel\", pwwn as \"PWWN\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"switch\" =~ /^$switch$/ and \"switchport\" =~ /^$switchport$/) AND  $timeFilter GROUP BY switch,switchport order by time desc limit 1",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT switchname as \"SwitchName\" FROM \"$db\".\"$rp\".\"Switches\" WHERE (\"switch\" =~ /^$switch$/) AND  $timeFilter order by time desc limit 1",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": " ",
+      "transformations": [
+        {
+          "id": "concatenate",
+          "options": {}
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "switch",
+                "switchport",
+                "Location",
+                "Description",
+                "Operational State",
+                "Oper Mode",
+                "Speed (G)",
+                "Member of Port-Channel",
+                "PWWN",
+                "SwitchName"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "Description": 5,
+              "Location": 0,
+              "Member of Port-Channel": 8,
+              "Oper Mode": 7,
+              "Operational State": 6,
+              "PWWN": 9,
+              "Speed (G)": 4,
+              "SwitchName": 2,
+              "switch": 1,
+              "switchport": 3
+            },
+            "renameByName": {
+              "switch": "Switch",
+              "switchport": "Port"
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "id": 17,
+      "panels": [],
+      "title": "Traffic and Congestion",
+      "type": "row"
+    },
+    {
+      "aliasColors": {
+        "RX Traffic fc1/07": "#7eb26d",
+        "RX Traffic fc4/23": "semi-dark-green",
+        "TX Traffic fc4/23": "semi-dark-yellow"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$data_source",
+      "decimals": 2,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "unit": "binbps"
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 7
+      },
+      "hiddenSeries": false,
+      "id": 6,
+      "interval": "[[min_interval]]",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "max": true,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": false
+      },
+      "percentage": false,
+      "pluginVersion": "7.3.6",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col $tag_switchport",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "SwitchPortStats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT (non_negative_difference(mean(rx_bytes))/elapsed(mean(oper_speed),1s))*8 as \"RX Traffic\",(non_negative_difference(mean(tx_bytes))/elapsed(mean(oper_speed),1s))*8 as \"TX Traffic\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"switch\" =~ /^$switch$/ AND \"switchport\" =~ /^$switchport$/) AND $timeFilter GROUP BY time($__interval),switchport",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "rx_bytes"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "10s"
+                ],
+                "type": "non_negative_derivative"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "switch",
+              "operator": "=~",
+              "value": "/^$switch$/"
+            },
+            {
+              "condition": "AND",
+              "key": "switchport",
+              "operator": "=~",
+              "value": "/^$switchport$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Traffic on $switchport",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:157",
+          "decimals": 2,
+          "format": "binbps",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:158",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Max port-channel1": "semi-dark-red"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$data_source",
+      "decimals": 2,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "unit": "percentunit"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*Max/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Gbits"
+              }
+            ]
+          }
+        ]
+      },
+      "fill": 8,
+      "fillGradient": 5,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 7
+      },
+      "hiddenSeries": false,
+      "id": 5,
+      "interval": "[[min_interval]]",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "max": true,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": false
+      },
+      "percentage": false,
+      "pluginVersion": "7.3.6",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:924",
+          "alias": "Max port-channel1",
+          "fill": 0,
+          "fillGradient": 0,
+          "points": true,
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col $tag_switchport",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "SwitchPortStats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT (non_negative_difference(mean(rx_bytes))/elapsed(mean(oper_speed),1s))*8/(mean(oper_speed)*1000000000*[[fc_data_rate]]) as \"RX Traffic\", (non_negative_difference(mean(tx_bytes))/elapsed(mean(oper_speed),1s))*8/(mean(oper_speed) * 1000000000*[[fc_data_rate]]) as \"TX Traffic\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"switch\" =~ /^$switch$/ AND \"switchport\" =~ /^$switchport$/) AND $timeFilter GROUP BY time($__interval),switchport fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "rx_bytes"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "10s"
+                ],
+                "type": "non_negative_derivative"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "switch",
+              "operator": "=~",
+              "value": "/^$switch$/"
+            },
+            {
+              "condition": "AND",
+              "key": "switchport",
+              "operator": "=~",
+              "value": "/^$switchport$/"
+            }
+          ]
+        },
+        {
+          "alias": "$col $tag_switchport",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(oper_speed) as \"Max\" from \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"switch\" =~ /^$switch$/ AND \"switchport\" =~ /^$switchport$/) AND $timeFilter GROUP BY time($__interval),switchport",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [
+        {
+          "$$hashKey": "object:1253",
+          "colorMode": "warning",
+          "fill": false,
+          "line": true,
+          "op": "gt",
+          "value": 0.6,
+          "yaxis": "left"
+        },
+        {
+          "$$hashKey": "object:1305",
+          "colorMode": "critical",
+          "fill": false,
+          "line": true,
+          "op": "gt",
+          "value": 0.8,
+          "yaxis": "left"
+        }
+      ],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "% Utilization on $switchport",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:157",
+          "decimals": 2,
+          "format": "percentunit",
+          "label": null,
+          "logBase": 1,
+          "max": "1",
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:158",
+          "decimals": 0,
+          "format": "Gbits",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "RX Traffic fc4/23": "semi-dark-green",
+        "TX Traffic fc4/23": "semi-dark-yellow",
+        "TxWait fc4/23": "semi-dark-red",
+        "TxWait fc4/24": "light-red"
+      },
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$data_source",
+      "decimals": 0,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 5,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 15
+      },
+      "hiddenSeries": false,
+      "id": 4,
+      "interval": "[[min_interval]]",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "max": true,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 1,
+      "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": false
+      },
+      "percentage": false,
+      "pluginVersion": "7.3.6",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col $tag_switchport",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "SwitchPortStats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT non_negative_difference(mean(txwait))*2.5/(elapsed(mean(oper_speed),1s)*1000000) as \"TxWait\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"switch\" =~ /^$switch$/ AND \"switchport\" =~ /^$switchport$/) AND $timeFilter GROUP BY time($__interval),switchport fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "rx_bytes"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "10s"
+                ],
+                "type": "non_negative_derivative"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "switch",
+              "operator": "=~",
+              "value": "/^$switch$/"
+            },
+            {
+              "condition": "AND",
+              "key": "switchport",
+              "operator": "=~",
+              "value": "/^$switchport$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Congestion on $switchport",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:157",
+          "decimals": 0,
+          "format": "percentunit",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:158",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "RX B2B transition to 0 fc4/24": "rgb(37, 217, 223)",
+        "RX Traffic fc4/23": "semi-dark-green",
+        "TX B2B transition to 0 fc4/24": "rgb(234, 57, 190)",
+        "TX Traffic fc4/23": "semi-dark-yellow",
+        "TxWait fc4/23": "semi-dark-red"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$data_source",
+      "decimals": 0,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 5,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 15
+      },
+      "hiddenSeries": false,
+      "id": 19,
+      "interval": "[[min_interval]]",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "max": true,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": false
+      },
+      "percentage": false,
+      "pluginVersion": "7.3.6",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col $tag_switchport",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "SwitchPortStats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT non_negative_difference(mean(rx_b2b_credit_to_zero))/elapsed(mean(oper_speed),1s) as \"RX B2B transition to 0\",non_negative_difference(mean(tx_b2b_credit_to_zero))/elapsed(mean(oper_speed),1s) as \"TX B2B transition to 0\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"switch\" =~ /^$switch$/ AND \"switchport\" =~ /^$switchport$/) AND $timeFilter GROUP BY time($__interval),switchport fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "rx_bytes"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "10s"
+                ],
+                "type": "non_negative_derivative"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "switch",
+              "operator": "=~",
+              "value": "/^$switch$/"
+            },
+            {
+              "condition": "AND",
+              "key": "switchport",
+              "operator": "=~",
+              "value": "/^$switchport$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "B2B transition to 0 on $switchport",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:157",
+          "decimals": 0,
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:158",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "RX Traffic fc4/23": "semi-dark-green",
+        "TX Traffic fc4/23": "semi-dark-yellow",
+        "TxWait fc4/23": "semi-dark-red"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$data_source",
+      "decimals": 0,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 5,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 23
+      },
+      "hiddenSeries": false,
+      "id": 23,
+      "interval": "[[min_interval]]",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "max": true,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": false
+      },
+      "percentage": false,
+      "pluginVersion": "7.3.6",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col $tag_switchport",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "SwitchPortStats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT non_negative_difference(mean(credit_loss))/elapsed(mean(oper_speed),1s) as \"Credit Loss\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"switch\" =~ /^$switch$/ AND \"switchport\" =~ /^$switchport$/) AND $timeFilter GROUP BY time($__interval),switchport fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "rx_bytes"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "10s"
+                ],
+                "type": "non_negative_derivative"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "switch",
+              "operator": "=~",
+              "value": "/^$switch$/"
+            },
+            {
+              "condition": "AND",
+              "key": "switchport",
+              "operator": "=~",
+              "value": "/^$switchport$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Credit Loss on $switchport",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:157",
+          "decimals": 0,
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:158",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "RX Traffic fc4/23": "semi-dark-green",
+        "TX Traffic fc4/23": "semi-dark-yellow",
+        "TxWait fc4/23": "semi-dark-red"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$data_source",
+      "decimals": 0,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 5,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 23
+      },
+      "hiddenSeries": false,
+      "id": 20,
+      "interval": "[[min_interval]]",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "max": true,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": false
+      },
+      "percentage": false,
+      "pluginVersion": "7.3.6",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col $tag_switchport",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "SwitchPortStats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(rx_b2b_credit_remain) as \"RX B2B remaining\",mean(tx_b2b_credit_remain) as \"TX B2B remaining\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"switch\" =~ /^$switch$/ AND \"switchport\" =~ /^$switchport$/) AND $timeFilter GROUP BY time($__interval),switchport",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "rx_bytes"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "10s"
+                ],
+                "type": "non_negative_derivative"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "switch",
+              "operator": "=~",
+              "value": "/^$switch$/"
+            },
+            {
+              "condition": "AND",
+              "key": "switchport",
+              "operator": "=~",
+              "value": "/^$switchport$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "B2B remaining credit on $switchport",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:157",
+          "decimals": 0,
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:158",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": true,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 31
+      },
+      "id": 22,
+      "panels": [
+        {
+          "aliasColors": {
+            "RX Traffic fc4/23": "semi-dark-green",
+            "TX Traffic fc4/23": "semi-dark-yellow",
+            "TxWait fc4/23": "semi-dark-red"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$data_source",
+          "decimals": 0,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "fill": 0,
+          "fillGradient": 5,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 8
+          },
+          "hiddenSeries": false,
+          "id": 8,
+          "interval": "[[min_interval]]",
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": false,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sort": "max",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "connected",
+          "options": {
+            "alertThreshold": false
+          },
+          "percentage": false,
+          "pluginVersion": "7.3.6",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col $tag_switchport",
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "linear"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "hide": false,
+              "measurement": "SwitchPortStats",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "SELECT non_negative_difference(mean(tx_discard))/elapsed(mean(oper_speed),1s) as \"TX Discards\", non_negative_difference(mean(rx_discard))/elapsed(mean(oper_speed),1s) as \"RX Discards\",non_negative_difference(mean(timeout_discards))/elapsed(mean(oper_speed),1s) as \"Timeout Discards\",non_negative_difference(mean(crc))/elapsed(mean(oper_speed),1s) as \"CRC\",non_negative_difference(mean(fec_corrected))/elapsed(mean(oper_speed),1s) as \"FEC Corrected\",non_negative_difference(mean(fec_uncorrected))/elapsed(mean(oper_speed),1s) as \"FEC Uncorrected\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"switch\" =~ /^$switch$/ AND \"switchport\" =~ /^$switchport$/) AND $timeFilter GROUP BY time($__interval),switchport fill(null)",
+              "rawQuery": true,
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "rx_bytes"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "10s"
+                    ],
+                    "type": "non_negative_derivative"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "switch",
+                  "operator": "=~",
+                  "value": "/^$switch$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "switchport",
+                  "operator": "=~",
+                  "value": "/^$switchport$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Errors on $switchport",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "$$hashKey": "object:157",
+              "decimals": 0,
+              "format": "none",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "$$hashKey": "object:158",
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "RX Traffic fc4/23": "semi-dark-green",
+            "TX Traffic fc4/23": "semi-dark-yellow",
+            "TxWait fc4/23": "semi-dark-red"
+          },
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$data_source",
+          "decimals": 0,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 5,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 8
+          },
+          "hiddenSeries": false,
+          "id": 7,
+          "interval": "[[min_interval]]",
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": false,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "nullPointMode": "connected",
+          "options": {
+            "alertThreshold": false
+          },
+          "percentage": false,
+          "pluginVersion": "7.3.6",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col $tag_switchport",
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "linear"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "hide": false,
+              "measurement": "SwitchPortStats",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "SELECT non_negative_difference(mean(itw))/elapsed(mean(oper_speed),1s) as \"ITW\",non_negative_difference(mean(link_failures))/elapsed(mean(oper_speed),1s) as \"Link Failure\",non_negative_difference(mean(rx_lr))/elapsed(mean(oper_speed),1s) as \"RX LR\",non_negative_difference(mean(tx_lr))/elapsed(mean(oper_speed),1s) as \"TX LR\",non_negative_difference(mean(rx_lrr))/elapsed(mean(oper_speed),1s) as \"RX LRR\" ,non_negative_difference(mean(tx_lrr))/elapsed(mean(oper_speed),1s) as \"TX LRR\" ,non_negative_difference(mean(signal_loss))/elapsed(mean(oper_speed),1s) as \"Signal Loss\",non_negative_difference(mean(sync_loss))/elapsed(mean(oper_speed),1s) as \"Sync Loss\"   FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"switch\" =~ /^$switch$/ AND \"switchport\" =~ /^$switchport$/) AND $timeFilter GROUP BY time($__interval),switchport fill(null)",
+              "rawQuery": true,
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "rx_bytes"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "10s"
+                    ],
+                    "type": "non_negative_derivative"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "switch",
+                  "operator": "=~",
+                  "value": "/^$switch$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "switchport",
+                  "operator": "=~",
+                  "value": "/^$switchport$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Errors on $switchport",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "$$hashKey": "object:157",
+              "decimals": 0,
+              "format": "none",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "$$hashKey": "object:158",
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "Errors",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "id": 15,
+      "panels": [
+        {
+          "aliasColors": {
+            "RX Traffic fc4/23": "semi-dark-green",
+            "SFP Current fc1/01": "rgb(223, 255, 0)",
+            "SFP Current fc4/24": "semi-dark-blue",
+            "TX Traffic fc4/23": "semi-dark-yellow",
+            "TxWait fc4/23": "semi-dark-red"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$data_source",
+          "decimals": 2,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "unit": "mamp"
+            },
+            "overrides": []
+          },
+          "fill": 0,
+          "fillGradient": 5,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 9
+          },
+          "hiddenSeries": false,
+          "id": 9,
+          "interval": "[[min_interval]]",
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": false,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sort": "max",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": false
+          },
+          "percentage": false,
+          "pluginVersion": "7.3.6",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "SFP Voltage fc1/01",
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col $tag_switchport",
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "linear"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "hide": false,
+              "measurement": "SwitchPortStats",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "SELECT mean(sfp_current) as \"SFP Current\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"switch\" =~ /^$switch$/ AND \"switchport\" =~ /^$switchport$/) AND $timeFilter GROUP BY time([[__interval]]),switchport fill(null)",
+              "rawQuery": true,
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "rx_bytes"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "10s"
+                    ],
+                    "type": "non_negative_derivative"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "switch",
+                  "operator": "=~",
+                  "value": "/^$switch$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "switchport",
+                  "operator": "=~",
+                  "value": "/^$switchport$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Current on $switchport",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "$$hashKey": "object:157",
+              "decimals": 2,
+              "format": "mamp",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "$$hashKey": "object:158",
+              "format": "volt",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "RX Traffic fc4/23": "semi-dark-green",
+            "SFP Voltage fc1/01": "rgb(2, 151, 255)",
+            "SFP Voltage fc4/24": "rgb(88, 255, 39)",
+            "TX Traffic fc4/23": "semi-dark-yellow",
+            "TxWait fc4/23": "semi-dark-red"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$data_source",
+          "decimals": 2,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "unit": "volt"
+            },
+            "overrides": []
+          },
+          "fill": 0,
+          "fillGradient": 5,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 9
+          },
+          "hiddenSeries": false,
+          "id": 13,
+          "interval": "[[min_interval]]",
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": false,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sort": "max",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": false
+          },
+          "percentage": false,
+          "pluginVersion": "7.3.6",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "SFP Voltage fc1/01",
+              "yaxis": 1
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col $tag_switchport",
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "linear"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "hide": false,
+              "measurement": "SwitchPortStats",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "SELECT mean(sfp_voltage) as \"SFP Voltage\"  FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"switch\" =~ /^$switch$/ AND \"switchport\" =~ /^$switchport$/) AND $timeFilter GROUP BY time([[__interval]]),switchport fill(null)",
+              "rawQuery": true,
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "rx_bytes"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "10s"
+                    ],
+                    "type": "non_negative_derivative"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "switch",
+                  "operator": "=~",
+                  "value": "/^$switch$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "switchport",
+                  "operator": "=~",
+                  "value": "/^$switchport$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Voltage on $switchport",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "$$hashKey": "object:157",
+              "decimals": 2,
+              "format": "volt",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "$$hashKey": "object:158",
+              "format": "volt",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "RX Traffic fc4/23": "semi-dark-green",
+            "SFP Temperature fc1/01": "rgb(0, 213, 255)",
+            "SFP Temperature fc4/24": "dark-yellow",
+            "TX Traffic fc4/23": "semi-dark-yellow",
+            "TxWait fc4/23": "semi-dark-red"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$data_source",
+          "decimals": 2,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "unit": "celsius"
+            },
+            "overrides": []
+          },
+          "fill": 0,
+          "fillGradient": 5,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 17
+          },
+          "hiddenSeries": false,
+          "id": 12,
+          "interval": "[[min_interval]]",
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": false,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sort": "max",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": false
+          },
+          "percentage": false,
+          "pluginVersion": "7.3.6",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "SFP Voltage fc1/01",
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col $tag_switchport",
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "linear"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "hide": false,
+              "measurement": "SwitchPortStats",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "SELECT mean(sfp_temperature) as \"SFP Temperature\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"switch\" =~ /^$switch$/ AND \"switchport\" =~ /^$switchport$/) AND $timeFilter GROUP BY time([[__interval]]),switchport fill(null)",
+              "rawQuery": true,
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "rx_bytes"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "10s"
+                    ],
+                    "type": "non_negative_derivative"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "switch",
+                  "operator": "=~",
+                  "value": "/^$switch$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "switchport",
+                  "operator": "=~",
+                  "value": "/^$switchport$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Temperature on $switchport",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "$$hashKey": "object:157",
+              "decimals": 2,
+              "format": "celsius",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "$$hashKey": "object:158",
+              "format": "volt",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "RX Traffic fc4/23": "semi-dark-green",
+            "SFP RX PWR fc1/01": "rgb(246, 15, 255)",
+            "SFP TX PWR fc1/01": "rgb(255, 86, 134)",
+            "TX Traffic fc4/23": "semi-dark-yellow",
+            "TxWait fc4/23": "semi-dark-red"
+          },
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$data_source",
+          "decimals": 2,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "unit": "dBm"
+            },
+            "overrides": []
+          },
+          "fill": 0,
+          "fillGradient": 5,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 17
+          },
+          "hiddenSeries": false,
+          "id": 18,
+          "interval": "[[min_interval]]",
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": false,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sort": "max",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": false
+          },
+          "percentage": false,
+          "pluginVersion": "7.3.6",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "SFP Voltage fc1/01",
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col $tag_switchport",
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "linear"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "hide": false,
+              "measurement": "SwitchPortStats",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "SELECT mean(sfp_tx_pwr) as \"SFP TX PWR\", mean(sfp_rx_pwr) as \"SFP RX PWR\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"switch\" =~ /^$switch$/ AND \"switchport\" =~ /^$switchport$/) AND $timeFilter GROUP BY time([[__interval]]),switchport fill(null)",
+              "rawQuery": true,
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "rx_bytes"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "10s"
+                    ],
+                    "type": "non_negative_derivative"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "switch",
+                  "operator": "=~",
+                  "value": "/^$switch$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "switchport",
+                  "operator": "=~",
+                  "value": "/^$switchport$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Power on $switchport",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "$$hashKey": "object:157",
+              "decimals": 2,
+              "format": "dBm",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "$$hashKey": "object:158",
+              "format": "volt",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "Digital Optical Monitoring",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 33
+      },
+      "id": 44,
+      "panels": [
+        {
+          "aliasColors": {
+            "RX Traffic fc4/23": "semi-dark-green",
+            "RX Traffic port-channel1": "dark-yellow",
+            "TX Traffic fc4/23": "semi-dark-yellow"
+          },
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$data_source",
+          "decimals": 2,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "unit": "binbps"
+            },
+            "overrides": []
+          },
+          "fill": 0,
+          "fillGradient": 5,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 10
+          },
+          "hiddenSeries": false,
+          "id": 41,
+          "interval": "[[min_interval]]",
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": false,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "nullPointMode": "connected",
+          "options": {
+            "alertThreshold": false
+          },
+          "percentage": false,
+          "pluginVersion": "7.3.6",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "$$hashKey": "object:214",
+              "alias": "/channel/",
+              "bars": false,
+              "lines": true,
+              "points": true,
+              "stack": false
+            }
+          ],
+          "spaceLength": 10,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col $tag_switchport",
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "linear"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "hide": false,
+              "measurement": "SwitchPortStats",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "SELECT (non_negative_difference(mean(rx_bytes))/elapsed(mean(oper_speed),1s))*8 as \"RX Traffic\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"switch\" =~ /^$switch$/ AND \"switchport\" =~ /^$switchport$/) AND $timeFilter GROUP BY time($__interval),switchport fill(null)",
+              "rawQuery": true,
+              "refId": "C",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "rx_bytes"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "10s"
+                    ],
+                    "type": "non_negative_derivative"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "switch",
+                  "operator": "=~",
+                  "value": "/^$switch$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "switchport",
+                  "operator": "=~",
+                  "value": "/^$switchport$/"
+                }
+              ]
+            },
+            {
+              "alias": "$col $tag_switchport",
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "linear"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "hide": false,
+              "measurement": "SwitchPortStats",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "SELECT (non_negative_difference(mean(rx_bytes))/elapsed(mean(oper_speed),1s))*8 as \"RX Traffic\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"switch\" =~ /^$switch$/ AND \"pc\" =~ /^$switchport$/) AND $timeFilter GROUP BY time([[__interval]]*20),switch,switchport fill(null)",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "rx_bytes"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "10s"
+                    ],
+                    "type": "non_negative_derivative"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "switch",
+                  "operator": "=~",
+                  "value": "/^$switch$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "switchport",
+                  "operator": "=~",
+                  "value": "/^$switchport$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "RX Traffic distribution on $switchport",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "$$hashKey": "object:157",
+              "decimals": 2,
+              "format": "binbps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "$$hashKey": "object:158",
+              "decimals": 2,
+              "format": "binbps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": true,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {
+            "RX Traffic fc4/23": "semi-dark-green",
+            "RX Traffic port-channel1": "dark-yellow",
+            "TX Traffic fc4/23": "semi-dark-yellow"
+          },
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$data_source",
+          "decimals": 2,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "unit": "binbps"
+            },
+            "overrides": []
+          },
+          "fill": 0,
+          "fillGradient": 5,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 10
+          },
+          "hiddenSeries": false,
+          "id": 45,
+          "interval": "[[min_interval]]",
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": false,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "nullPointMode": "connected",
+          "options": {
+            "alertThreshold": false
+          },
+          "percentage": false,
+          "pluginVersion": "7.3.6",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "$$hashKey": "object:214",
+              "alias": "/channel/",
+              "bars": false,
+              "lines": true,
+              "points": true,
+              "stack": false
+            }
+          ],
+          "spaceLength": 10,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$col $tag_switchport",
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "linear"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "hide": false,
+              "measurement": "SwitchPortStats",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "SELECT (non_negative_difference(mean(tx_bytes))/elapsed(mean(oper_speed),1s))*8 as \"RX Traffic\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"switch\" =~ /^$switch$/ AND \"switchport\" =~ /^$switchport$/) AND $timeFilter GROUP BY time($__interval),switchport fill(null)",
+              "rawQuery": true,
+              "refId": "C",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "rx_bytes"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "10s"
+                    ],
+                    "type": "non_negative_derivative"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "switch",
+                  "operator": "=~",
+                  "value": "/^$switch$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "switchport",
+                  "operator": "=~",
+                  "value": "/^$switchport$/"
+                }
+              ]
+            },
+            {
+              "alias": "$col $tag_switchport",
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "linear"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "hide": false,
+              "measurement": "SwitchPortStats",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "SELECT (non_negative_difference(mean(tx_bytes))/elapsed(mean(oper_speed),1s))*8 as \"RX Traffic\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"switch\" =~ /^$switch$/ AND \"pc\" =~ /^$switchport$/) AND $timeFilter GROUP BY time([[__interval]]*20),switch,switchport fill(null)",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "rx_bytes"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "10s"
+                    ],
+                    "type": "non_negative_derivative"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "switch",
+                  "operator": "=~",
+                  "value": "/^$switch$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "switchport",
+                  "operator": "=~",
+                  "value": "/^$switchport$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "TX Traffic distribution on $switchport",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "$$hashKey": "object:157",
+              "decimals": 2,
+              "format": "binbps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "$$hashKey": "object:158",
+              "decimals": 2,
+              "format": "binbps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": true,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "Port-Channel traffic distribution (Must Select a port-channel interface from Switch Port menu)",
+      "type": "row"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 26,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "telegraf",
+          "value": "telegraf"
+        },
+        "error": null,
+        "hide": 2,
+        "label": "Database",
+        "name": "db",
+        "options": [
+          {
+            "selected": true,
+            "text": "telegraf",
+            "value": "telegraf"
+          }
+        ],
+        "query": "telegraf",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "autogen",
+          "value": "autogen"
+        },
+        "error": null,
+        "hide": 2,
+        "label": "Retention Policy",
+        "name": "rp",
+        "options": [
+          {
+            "selected": true,
+            "text": "autogen",
+            "value": "autogen"
+          }
+        ],
+        "query": "autogen",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "InfluxDB",
+          "value": "InfluxDB"
+        },
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "Data Source",
+        "multi": false,
+        "name": "data_source",
+        "options": [],
+        "query": "influxdb",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "0.85",
+          "value": "0.85"
+        },
+        "error": null,
+        "hide": 2,
+        "label": null,
+        "name": "fc_data_rate",
+        "options": [
+          {
+            "selected": true,
+            "text": "0.85",
+            "value": "0.85"
+          }
+        ],
+        "query": "0.85",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "172.22.163.48",
+          "value": "172.22.163.48"
+        },
+        "datasource": "$data_source",
+        "definition": "",
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "Switch",
+        "multi": false,
+        "name": "switch",
+        "options": [],
+        "query": "show tag values from  \"$db\".\"$rp\".\"Switches\" with key=switch  WHERE $timeFilter ",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": [
+            "fc4/24"
+          ],
+          "value": [
+            "fc4/24"
+          ]
+        },
+        "datasource": "$data_source",
+        "definition": "",
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "Switch Port",
+        "multi": true,
+        "name": "switchport",
+        "options": [],
+        "query": "show tag values from \"$db\".\"$rp\".\"SwitchPortStats\" with key=switchport where switch =~ /$switch/ and $timeFilter",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "30",
+          "value": "30"
+        },
+        "datasource": "$data_source",
+        "definition": "",
+        "error": null,
+        "hide": 2,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "min_interval",
+        "options": [],
+        "query": "select last(elapsed) from (select elapsed(switchname,1s) from \"$db\".\"$rp\".\"Switches\" where switch =~ /$switch/ and $timeFilter)",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "MTM - MDS Switchports",
+  "uid": "qxGcp0bGk",
+  "version": 46
+}
