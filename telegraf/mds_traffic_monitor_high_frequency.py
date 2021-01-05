@@ -3,7 +3,7 @@
 desired output format"""
 
 __author__ = "Paresh Gupta"
-__version__ = "0.02"
+__version__ = "0.03"
 
 import sys
 import os
@@ -115,17 +115,18 @@ def parse_cmdline_arguments():
             the MDS switch information in the format: IP,user,password')
     parser.add_argument('output_format', action='store', help='specify the \
             output format', choices=['dict', 'influxdb-lp'])
-    parser.add_argument('-V', '--verify-only', dest='verify_only', \
+    parser.add_argument('-V', dest='verify_only', \
             action='store_true', default=False, help='verify \
             connection and stats pull but do not print the stats')
-    parser.add_argument('-v', '--verbose', dest='verbose', \
+    parser.add_argument('-v', dest='verbose', \
             action='store_true', default=False, help='warn and above')
-    parser.add_argument('-vv', '--more_verbose', dest='more_verbose', \
+    parser.add_argument('-vv', dest='more_verbose', \
             action='store_true', default=False, help='info and above')
-    parser.add_argument('-vvv', '--most_verbose', dest='most_verbose', \
+    parser.add_argument('-vvv', dest='most_verbose', \
             action='store_true', default=False, help='debug and above')
-    parser.add_argument('-vvvv', '--raw_dump', dest='raw_dump', \
+    parser.add_argument('-vvvv', dest='raw_dump', \
             action='store_true', default=False, help='Dump raw data')
+
     args = parser.parse_args()
     user_args['input_file'] = args.input_file
     user_args['output_format'] = args.output_format
@@ -601,14 +602,26 @@ def parse_sh_int_counters(switch_ip, cmd_body, per_switch_stats_dict):
 
                     rt = rt[0]
 
+                    if 'rx_total_bytes' in rt:
+                        data_dict['rx_bytes'] = rt['rx_total_bytes']
+
                     if 'rx_bytes' in rt:
                         data_dict['rx_bytes'] = rt['rx_bytes']
+
+                    if 'tx_total_bytes' in rt:
+                        data_dict['tx_bytes'] = rt['tx_total_bytes']
 
                     if 'tx_bytes' in rt:
                         data_dict['tx_bytes'] = rt['tx_bytes']
 
+                    if 'rx_total_discard' in rt:
+                        data_dict['rx_discard'] = rt['rx_total_discard']
+
                     if 'rx_discard_frames' in rt:
                         data_dict['rx_discard'] = rt['rx_discard_frames']
+
+                    if 'tx_total_discard' in rt:
+                        data_dict['tx_discard'] = rt['tx_total_discard']
 
                     if 'tx_discard_frames' in rt:
                         data_dict['tx_discard'] = rt['tx_discard_frames']
@@ -616,8 +629,14 @@ def parse_sh_int_counters(switch_ip, cmd_body, per_switch_stats_dict):
                     if 'rx_error_frames' in rt:
                         data_dict['rx_error'] = rt['rx_error_frames']
 
+                    if 'rx_total_error' in rt:
+                        data_dict['rx_error'] = rt['rx_total_error']
+
                     if 'tx_error_frames' in rt:
                         data_dict['tx_error'] = rt['tx_error_frames']
+
+                    if 'tx_total_error' in rt:
+                        data_dict['tx_error'] = rt['tx_total_error']
 
                 # Link Stats
                 if 'TABLE_link' in rc:
@@ -633,25 +652,48 @@ def parse_sh_int_counters(switch_ip, cmd_body, per_switch_stats_dict):
                         if 'rx_link_failures' in rl:
                             data_dict['link_failures'] = rl['rx_link_failures']
 
+                        if 'link_failures' in rl:
+                            data_dict['link_failures'] = rl['link_failures']
+
                         if 'rx_sync_loss' in rl:
                             data_dict['sync_loss'] = rl['rx_sync_loss']
+
+                        if 'sync_loss' in rl:
+                            data_dict['sync_loss'] = rl['sync_loss']
 
                         if 'rx_signal_loss' in rl:
                             data_dict['signal_loss'] = rl['rx_signal_loss']
 
+                        if 'signal_loss' in rl:
+                            data_dict['signal_loss'] = rl['signal_loss']
+
                         if 'rx_inv_trans_err' in rl:
                             data_dict['itw'] = rl['rx_inv_trans_err']
 
+                        if 'inv_trans_err' in rl:
+                            data_dict['itw'] = rl['inv_trans_err']
+
                         if 'rx_inv_crc' in rl:
                             data_dict['crc'] = rl['rx_inv_crc']
+
+                        if 'inv_crc' in rl:
+                            data_dict['crc'] = rl['inv_crc']
 
                         if 'rx_fec_corrected' in rl:
                             data_dict['fec_corrected'] = \
                                                     rl['rx_fec_corrected']
 
+                        if 'fec_corrected' in rl:
+                            data_dict['fec_corrected'] = \
+                                                    rl['fec_corrected']
+
                         if 'rx_fec_uncorrected' in rl:
                             data_dict['fec_uncorrected'] = \
                                                     rl['rx_fec_uncorrected']
+
+                        if 'fec_uncorrected' in rl:
+                            data_dict['fec_uncorrected'] = \
+                                                    rl['fec_uncorrected']
 
                         if 'rx_link_reset' in rl:
                             data_dict['rx_lr'] = rl['rx_link_reset']
@@ -680,8 +722,15 @@ def parse_sh_int_counters(switch_ip, cmd_body, per_switch_stats_dict):
                             data_dict['timeout_discards'] = \
                                                     rcon['tx_timeout_discards']
 
+                        if 'timeout_discards' in rcon:
+                            data_dict['timeout_discards'] = \
+                                                    rcon['timeout_discards']
+
                         if 'tx_credit_loss' in rcon:
                             data_dict['credit_loss'] = rcon['tx_credit_loss']
+
+                        if 'credit_loss' in rcon:
+                            data_dict['credit_loss'] = rcon['credit_loss']
 
                         if 'txwait' in rcon:
                             data_dict['txwait'] = rcon['txwait']
