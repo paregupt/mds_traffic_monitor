@@ -3,7 +3,7 @@
 desired output format"""
 
 __author__ = "Paresh Gupta"
-__version__ = "0.03"
+__version__ = "0.04"
 
 import sys
 import os
@@ -41,6 +41,9 @@ stats_dict = {}
 # to update stats_dict
 raw_cli_stats = {}
 raw_api_stats = {}
+
+intf_fc_str = ''
+intf_pc_str = ''
 
 '''
 Tracks response and parsing time
@@ -115,6 +118,9 @@ def parse_cmdline_arguments():
             the MDS switch information in the format: IP,user,password')
     parser.add_argument('output_format', action='store', help='specify the \
             output format', choices=['dict', 'influxdb-lp'])
+    parser.add_argument('-intfstr', dest='intf_str', \
+            action='store_true', default=False, help='Prebuild FC and \
+            port-channel interface string to use with show interface command')
     parser.add_argument('-V', dest='verify_only', \
             action='store_true', default=False, help='verify \
             connection and stats pull but do not print the stats')
@@ -130,6 +136,7 @@ def parse_cmdline_arguments():
     args = parser.parse_args()
     user_args['input_file'] = args.input_file
     user_args['output_format'] = args.output_format
+    user_args['intf_str'] = args.intf_str
     user_args['verify_only'] = args.verify_only
     user_args['verbose'] = args.verbose
     user_args['more_verbose'] = args.more_verbose
@@ -260,6 +267,9 @@ def print_output_in_influxdb_lp(switch_ip, per_switch_stats_dict):
                       per_switch_stats_dict['location']
 
         for key, val in sorted((per_port_dict['meta']).items()):
+            # Avoid null tags
+            if '' == str(val):
+                continue
             port_tags = port_tags + ',' + key + '=' + str(val)
 
         port_tags = port_tags + ',switch=' + switch_ip + \
@@ -351,14 +361,6 @@ def parse_sh_ver(switch_ip, cmd_body, per_switch_stats_dict):
     per_switch_stats_dict['sys_ver'] = cmd_body.get('sys_ver_str')
     per_switch_stats_dict['chassis_id'] = cmd_body.get('chassis_id')
     per_switch_stats_dict['switchname'] = cmd_body.get('host_name')
-    uptime_secs = cmd_body.get('kern_uptm_secs') + \
-                  cmd_body.get('kern_uptm_mins') * SECONDS_IN_MINUTE + \
-                  cmd_body.get('kern_uptm_hrs') * MINUTES_IN_HOUR * \
-                                                  SECONDS_IN_MINUTE + \
-                  cmd_body.get('kern_uptm_days') * HOURS_IN_DAY * \
-                                                   MINUTES_IN_HOUR * \
-                                                   SECONDS_IN_MINUTE
-    per_switch_stats_dict['uptime'] = uptime_secs
 
     logger.info('Done: parse_sh_ver for %s', switch_ip)
 
@@ -411,6 +413,95 @@ def parse_sh_sys_uptime(switch_ip, cmd_body, per_switch_stats_dict):
 
     logger.info('Done: parse_sh_sys_uptime for %s', switch_ip)
 
+def parse_sh_mod(switch_ip, cmd_body, per_switch_stats_dict):
+    """
+    show module
+    """
+    logger.info('parse_sh_mod for %s', switch_ip)
+
+    if 'TABLE_modinfo' not in cmd_body:
+        logger.error('TABLE_modinfo not found in cmd_body\n%s', cmd_body)
+        return
+
+    if 'ROW_modinfo' not in cmd_body['TABLE_modinfo']:
+        logger.error('ROW_modinfo not found in cmd_body\n%s', cmd_body)
+        return
+
+    modinfo = cmd_body['TABLE_modinfo']['ROW_modinfo']
+
+    if isinstance(modinfo, dict):
+        modinfo = [modinfo]
+
+    module_dict = per_switch_stats_dict['modules']
+
+    global intf_fc_str
+    intf_str_list = []
+    for item in modinfo:
+        if 'model' not in item:
+            logger.error('Unable to find model in ROW_modinfo')
+            continue
+
+        if 'ports' not in item:
+            logger.error('Unable to find ports in ROW_modinfo')
+            continue
+
+        if 'modtype' not in item:
+            logger.warning('Unable to find modtype in ROW_modinfo')
+            continue
+
+        if 'mod' in item:
+            mod_num = item['mod']
+        elif 'modinf' in item:
+            mod_num = item['modinf']
+        else:
+            logger.error('Unable to find mod/modinf in ROW_modinfo')
+            continue
+
+        if '1536K9' in item['model'] or '768K9' in item['model'] or \
+            '9132' in item['model'] or '9148T' in item['model'] or \
+            '9396T' in item['model']:
+            module_dict[mod_num] = {}
+            module_dict[mod_num]['model'] = item['model']
+            module_dict[mod_num]['status'] = item['status']
+            module_dict[mod_num]['modtype'] = item['modtype']
+
+            intf_str = 'fc' +  str(mod_num) + '/' + '1 - ' + str(item['ports'])
+            intf_str_list.append(intf_str)
+
+        if 'X9334-K9' in item['model']:
+            module_dict[mod_num] = {}
+            module_dict[mod_num]['model'] = item['model']
+            module_dict[mod_num]['status'] = item['status']
+            module_dict[mod_num]['modtype'] = item['modtype']
+
+            intf_str = 'fc' +  str(mod_num) + '/' + '1 - 24'
+            intf_str_list.append(intf_str)
+
+        if 'SF' in item['model']:
+            module_dict[mod_num] = {}
+            module_dict[mod_num]['model'] = item['model']
+            module_dict[mod_num]['status'] = item['status']
+            module_dict[mod_num]['modtype'] = item['modtype']
+
+    intf_fc_str = ' , '.join(intf_str_list)
+
+    logger.info('Done: parse_sh_mod for %s %s', switch_ip, intf_fc_str)
+
+def parse_sh_portc_u(switch_ip, cmd_body, per_switch_stats_dict):
+    """
+    show port-channel usage
+    """
+    logger.info('parse_sh_portc_u for %s', switch_ip)
+    logger.debug('%s', cmd_body)
+    global intf_pc_str
+
+    pc_used = re.findall(r'\d+', (''.join(re.findall(r'Used(.*)\n', cmd_body))))
+    #pc_used = re.findall(r'\d+', ((re.search('Used(.*)\n', cmd_body)).group(1)))
+    pc_list = ['port-channel ' + num for num in pc_used]
+    intf_pc_str = ' , '.join(pc_list)
+
+    logger.info('Done: parse_sh_portc_u for %s %s', switch_ip, intf_pc_str)
+
 def parse_sh_int_counters(switch_ip, cmd_body, per_switch_stats_dict):
     """
     show interface counters detail
@@ -418,7 +509,6 @@ def parse_sh_int_counters(switch_ip, cmd_body, per_switch_stats_dict):
     logger.info('parse_sh_int_counters for %s', switch_ip)
 
     port_dict = per_switch_stats_dict['ports']
-    #TODO: Watch out for this check if show version finishes later
     if 'sys_ver' not in per_switch_stats_dict:
         logger.warning('sys_ver not found for %s', switch_ip)
     else:
@@ -764,7 +854,6 @@ def parse_sh_int_trans(switch_ip, cmd_body, per_switch_stats_dict):
     logger.info('parse_sh_int_trans for %s', switch_ip)
 
     port_dict = per_switch_stats_dict['ports']
-    #TODO: Watch out for this check if show version finishes later
     if 'sys_ver' not in per_switch_stats_dict:
         logger.warning('sys_ver not found for %s', switch_ip)
     else:
@@ -909,9 +998,9 @@ def parse_sh_int(switch_ip, cmd_body, per_switch_stats_dict):
     show interface
     """
     logger.info('parse_sh_int for %s', switch_ip)
+    prev_interface = None
 
     port_dict = per_switch_stats_dict['ports']
-    #TODO: Watch out for this check if show version finishes later
     if 'sys_ver' not in per_switch_stats_dict:
         logger.warning('sys_ver not found for %s', switch_ip)
     else:
@@ -935,10 +1024,17 @@ def parse_sh_int(switch_ip, cmd_body, per_switch_stats_dict):
 
         for ri in ti['ROW_interface']:
             if 'interface' not in ri:
-                logger.error('interface not found in ROW_interface')
-                continue
+                if per_switch_stats_dict['sys_ver'] == '8.4(2)' and \
+                    prev_interface is not None:
+                    interface = prev_interface
+                    logger.warning('Using previous interface: %s', prev_interface)
+                else:
+                    logger.error('interface not found in ROW_interface')
+                    continue
+            else:
+                interface = ri['interface']
 
-            interface = ri['interface']
+            prev_interface = interface
             logger.debug('Found %s in %s', interface, switch_ip)
             if 'fc' not in interface:
                 if 'channel' not in interface:
@@ -1028,7 +1124,7 @@ def update_stats_dict(switch_ip, per_switch_raw_api_stats_dict,
                          cmd, switch_ip)
             continue
         body = per_switch_raw_api_stats_dict[cmd]
-        dispatcher[cmd](switch_ip, body, per_switch_stats_dict)
+        dispatcher[cmd][0](switch_ip, body, per_switch_stats_dict)
 
 
 ###############################################################################
@@ -1091,6 +1187,7 @@ def get_switches():
                 stats_dict[switch[0]] = {}
                 stats_dict[switch[0]]['location'] = location
                 stats_dict[switch[0]]['ports'] = {}
+                stats_dict[switch[0]]['modules'] = {}
 
                 raw_api_stats[switch[0]] = {}
 
@@ -1100,17 +1197,19 @@ def get_switches():
         logger.error('Nothing to monitor. Check input file.')
 
 def mds_nxapi_connect(switch_ip, switchuser, switchpassword, protocol, port,
-                      verify_ssl, timeout, cmd_list):
+                      verify_ssl, timeout, dispatcher):
     """ Connect to a Cisco MDS switches via NX-API and get the response
-    of the commands in cmd_str"""
+    of the commands"""
 
+    global raw_api_stats
     timeout = int(timeout)
-    api_method = "cli"
+    cmd_list = [*dispatcher]
     api_version = 1.2
     jsonrpc_ver = "2.0"
     payload_list = []
     cmd_id = 1
     for cmd in cmd_list:
+        api_method = dispatcher[cmd][1]
         payload = dict(jsonrpc = jsonrpc_ver,
                        method = api_method,
                        params = dict(cmd = cmd, version = api_version),
@@ -1134,6 +1233,41 @@ def mds_nxapi_connect(switch_ip, switchuser, switchpassword, protocol, port,
 
     response = requests.post(url, data=json.dumps(payload_list), headers=headers,
                              auth=(switchuser,switchpassword), verify=verify).json()
+
+    if user_args.get('raw_dump'):
+        current_log_level = logger.level
+        logger.setLevel(logging.DEBUG)
+        logger.debug('Prining raw Response\n%s', json.dumps(response, indent=2))
+        logger.debug('Printing raw dump - DONE')
+        logger.setLevel(current_log_level)
+
+    if isinstance(response, dict):
+        response = [response]
+
+    for item in response:
+        if "cmd" not in item:
+            logger.error("No cmd in response for %s\n%s", switch_ip, item)
+            continue
+        if "error" in item:
+            logger.error('Error from %s for %s\n%s', switch_ip, item["cmd"], item)
+            continue
+        if "result" not in item:
+            logger.error("No result in response for %s\n%s", switch_ip, item)
+            continue
+        if api_method == 'cli':
+            if "body" not in item["result"]:
+                logger.error("No body in response for %s\n%s", switch_ip, item)
+                continue
+            raw_api_stats[switch_ip][item["cmd"]] = {}
+            raw_api_stats[switch_ip][item["cmd"]] = item["result"]["body"]
+        elif api_method == 'cli_ascii':
+            if "msg" not in item["result"]:
+                logger.error("No msg in response for %s\n%s", switch_ip, item)
+                continue
+            raw_api_stats[switch_ip][item["cmd"]] = {}
+            raw_api_stats[switch_ip][item["cmd"]] = item["result"]["msg"]
+        else:
+            logger.error('Unknown api_method:%s, %s', switch_ip, payload_list)
 
     return response
 
@@ -1165,36 +1299,10 @@ def connect_and_pull_stats(executor):
                                  switch_dict[switch_ip][3],
                                  switch_dict[switch_ip][4],
                                  switch_dict[switch_ip][5],
-                                 [*dispatcher])
+                                 dispatcher)
 
     nxapi_rsp = time.time()
     logger.info('Received from %s for %s', switch_ip, [*dispatcher])
-
-    if user_args.get('raw_dump'):
-        current_log_level = logger.level
-        logger.setLevel(logging.DEBUG)
-        logger.debug('Prining raw Response\n%s', json.dumps(response, indent=2))
-        logger.debug('Printing raw dump - DONE')
-        logger.setLevel(current_log_level)
-
-    if isinstance(response, dict):
-        response = [response]
-
-    for item in response:
-        if "cmd" not in item:
-            logger.error("No cmd in response for %s\n%s", switch_ip, item)
-            continue
-        if "error" in item:
-            logger.error('Error from %s for %s\n%s', switch_ip, item["cmd"], item)
-            continue
-        if "result" not in item:
-            logger.error("No result in response for %s\n%s", switch_ip, item)
-            continue
-        if "body" not in item["result"]:
-            logger.error("No body in response for %s\n%s", switch_ip, item)
-            continue
-        raw_api_stats[switch_ip][item["cmd"]] = {}
-        raw_api_stats[switch_ip][item["cmd"]] = item["result"]["body"]
 
     update_stats_dict(switch_ip, raw_api_stats[switch_ip],
                       stats_dict[switch_ip], dispatcher)
@@ -1223,9 +1331,9 @@ def get_switch_stats():
 
     executor_list = []
     for switch_ip, switch_details in switch_dict.items():
-        logger.info('Connect and pull stats from:%s', switch_ip)
+        logger.info('Connect (1) and pull stats from:%s', switch_ip)
         idx = 0
-        for dispatch in fn_dispatcher:
+        for dispatch in fn_dispatcher_1:
             list_to_add = []
             list_to_add.append(switch_ip)
             list_to_add.append(dispatch)
@@ -1243,24 +1351,84 @@ def get_switch_stats():
         connect_and_pull_stats(executor)
     '''
 
+
+    fn_dispatcher_2_intf_str = []
+    dispatcher = fn_dispatcher_2
+    if user_args['intf_str']:
+        global intf_fc_str
+        global intf_pc_str
+        logger.info('Prebuilt FC interface string:%s', intf_fc_str)
+        logger.info('Prebuilt port-channel interface string:%s', intf_pc_str)
+
+        count_det_fc = 'show interface counters detailed'
+        count_det_val = [parse_sh_int_counters, 'cli']
+        count_det_dict = {count_det_fc:count_det_val}
+        fn_dispatcher_2_intf_str.append(count_det_dict)
+
+        trans_det_fc = 'show interface ' + intf_fc_str + ' transceiver details'
+        trans_det_val = [parse_sh_int_trans, 'cli']
+        trans_det_dict = {trans_det_fc:trans_det_val}
+        fn_dispatcher_2_intf_str.append(trans_det_dict)
+
+        sh_int_fc = 'show interface ' + intf_fc_str
+        sh_int_val = [parse_sh_int, 'cli']
+        sh_int_dict = {sh_int_fc:sh_int_val}
+        if intf_pc_str != '':
+            sh_int_pc = 'show interface ' + intf_pc_str
+            sh_int_dict[sh_int_pc] = sh_int_val
+        fn_dispatcher_2_intf_str.append(sh_int_dict)
+
+        dispatcher = fn_dispatcher_2_intf_str
+        logger.debug('Dispatcher with intf str:%s', fn_dispatcher_2_intf_str)
+
+    executor_list = []
+    for switch_ip, switch_details in switch_dict.items():
+        logger.info('Connect (2) and pull stats from:%s', switch_ip)
+        # Carry the value of idx from fn_dispatcher_1
+        for dispatch in dispatcher:
+            list_to_add = []
+            list_to_add.append(switch_ip)
+            list_to_add.append(dispatch)
+            list_to_add.append(idx)
+            idx = idx + 1
+            executor_list.append(list_to_add)
+
+    logger.debug('Connect and pull stats: executor_list : %s', executor_list)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=len(executor_list)) as e:
+        for executor in executor_list:
+            e.submit(connect_and_pull_stats, executor)
+    '''
+    for executor in executor_list:
+        connect_and_pull_stats(executor)
+    '''
+
+
 ###############################################################################
 # END: Connection and Collector functions
 ###############################################################################
 
-fn_dispatcher = [
+fn_dispatcher_1 = [
     {
-        "show version": parse_sh_ver,
-        "show system resources": parse_sh_sys_resources,
-        "show system uptime": parse_sh_sys_uptime
+        "show version": [parse_sh_ver, 'cli'],
+        "show system resources": [parse_sh_sys_resources, 'cli'],
+        "show system uptime": [parse_sh_sys_uptime, 'cli'],
+        "show module": [parse_sh_mod, 'cli']
     },
     {
-        "show interface counters detailed": parse_sh_int_counters
+        "show port-channel usage": [parse_sh_portc_u, 'cli_ascii']
+    }
+]
+
+fn_dispatcher_2 = [
+    {
+        "show interface counters detailed": [parse_sh_int_counters, 'cli']
     },
     {
-        "show interface transceiver details": parse_sh_int_trans
+        "show interface transceiver details": [parse_sh_int_trans, 'cli']
     },
     {
-        "show interface": parse_sh_int
+        "show interface": [parse_sh_int, 'cli']
     }
 ]
 
@@ -1332,9 +1500,15 @@ def main(argv):
 
             #cmd_str = '\n'.join([*fn_dispatcher[idx]])
             cmd_str = ''
-            for cmd in [*fn_dispatcher[idx]]:
-                cmd_str = cmd_str + '\n' + \
-                '    |     {:<40}   |'.format(cmd)
+            if idx < len(fn_dispatcher_1):
+                for cmd in [*fn_dispatcher_1[idx]]:
+                    cmd_str = cmd_str + '\n' + \
+                    '    |     {:<40}   |'.format(cmd)
+            else:
+                idx_2 = idx - len(fn_dispatcher_1)
+                for cmd in [*fn_dispatcher_2[idx_2]]:
+                    cmd_str = cmd_str + '\n' + \
+                    '    |     {:<40}   |'.format(cmd)
 
             time_output = time_output + '\n' + \
                 '    | Command set:{:<2}                                 |'.\
