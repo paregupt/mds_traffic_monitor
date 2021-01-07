@@ -3,7 +3,7 @@
 desired output format"""
 
 __author__ = "Paresh Gupta"
-__version__ = "0.04"
+__version__ = "0.05"
 
 import sys
 import os
@@ -277,7 +277,8 @@ def print_output_in_influxdb_lp(switch_ip, per_switch_stats_dict):
 
         for key, val in sorted((per_port_dict['data']).items()):
             sep = ' ' if port_fields == '' else ','
-            if key == 'description' or key == 'pwwn':
+            if key == 'description' or key == 'pwwn' or \
+                key == 'port_down_reason':
                 port_fields = port_fields + sep + key + '="' + str(val) + '"'
             else:
                 port_fields = port_fields + sep + key + '=' + str(val)
@@ -837,9 +838,19 @@ def parse_sh_int_counters(switch_ip, cmd_body, per_switch_stats_dict):
                             data_dict['rx_b2b_credit_to_zero'] = \
                                                     rcon['rx_b2b_credit_to_zero']
 
+                        # Same as above, just different NX-OS
+                        if 'rx_b2b_credits' in rcon:
+                            data_dict['rx_b2b_credit_to_zero'] = \
+                                                    rcon['rx_b2b_credits']
+
                         if 'tx_b2b_credit_to_zero' in rcon:
                             data_dict['tx_b2b_credit_to_zero'] = \
                                                     rcon['tx_b2b_credit_to_zero']
+
+                        # Same as above, just different NX-OS
+                        if 'tx_b2b_credits' in rcon:
+                            data_dict['tx_b2b_credit_to_zero'] = \
+                                                    rcon['tx_b2b_credits']
             else:
                 logger.error('Unable to decode body:%s in %s',
                              interface, cmd_body)
@@ -1088,20 +1099,28 @@ def parse_sh_int(switch_ip, cmd_body, per_switch_stats_dict):
                 data_dict['oper_speed'] = \
                             get_speed_num_from_string(ri['oper_speed'])
 
+            if 'port_mode' in ri:
+                if isinstance(ri['port_mode'], list):
+                    if len(ri['port_mode']) == 3:
+                        meta_dict['oper_mode'] = ri['port_mode'][2]
+                        data_dict['description'] = \
+                            (ri['port_mode'][0]).strip('"')
+                    if len(ri['port_mode']) == 2:
+                        data_dict['description'] = \
+                            (ri['port_mode'][0]).strip('"')
+                else:
+                    meta_dict['oper_mode'] = ri['port_mode']
+
             if 'oper_port_state' in ri:
                 meta_dict['oper_state'] = ri['oper_port_state']
                 if 'down' not in meta_dict['oper_state']:
                     if 'oper_mode' in ri:
                         meta_dict['oper_mode'] = ri['oper_mode']
-
-                    if 'port_mode' in ri:
-                        if isinstance(ri['port_mode'], list):
-                            if len(ri['port_mode']) == 3:
-                                meta_dict['oper_mode'] = ri['port_mode'][2]
-                                data_dict['description'] = \
-                                    (ri['port_mode'][0]).strip('"')
-                        else:
-                            meta_dict['oper_mode'] = ri['port_mode']
+                else:
+                    if 'port_state' in ri:
+                        data_dict['port_down_reason'] = ri['port_state']
+                    if 'port_down_reason' in ri:
+                        data_dict['port_down_reason'] = ri['port_down_reason']
 
             if 'bundle_if_index' in ri:
                 meta_dict['pc'] = ri['bundle_if_index']
