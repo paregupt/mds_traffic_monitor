@@ -3,7 +3,7 @@
 desired output format"""
 
 __author__ = "Paresh Gupta"
-__version__ = "0.05"
+__version__ = "0.06"
 
 import sys
 import os
@@ -121,6 +121,10 @@ def parse_cmdline_arguments():
     parser.add_argument('-intfstr', dest='intf_str', \
             action='store_true', default=False, help='Prebuild FC and \
             port-channel interface string to use with show interface command')
+    parser.add_argument('-intfcntrstr', dest='intf_cntr_str', \
+            action='store_true', default=False, help='Use prebuilt FC and \
+            port-channel interface string with show interface counter detail \
+            command')
     parser.add_argument('-V', dest='verify_only', \
             action='store_true', default=False, help='verify \
             connection and stats pull but do not print the stats')
@@ -137,6 +141,7 @@ def parse_cmdline_arguments():
     user_args['input_file'] = args.input_file
     user_args['output_format'] = args.output_format
     user_args['intf_str'] = args.intf_str
+    user_args['intf_cntr_str'] = args.intf_cntr_str
     user_args['verify_only'] = args.verify_only
     user_args['verbose'] = args.verbose
     user_args['more_verbose'] = args.more_verbose
@@ -503,10 +508,112 @@ def parse_sh_portc_u(switch_ip, cmd_body, per_switch_stats_dict):
 
     logger.info('Done: parse_sh_portc_u for %s %s', switch_ip, intf_pc_str)
 
+def fill_data_from_body(data_dict, intf_output):
+        data_dict['rx_bytes'] = int(re.findall(r'\d+', (''.join(re.findall(r'frames,(.*)bytes received', intf_output))))[0])
+        data_dict['tx_bytes'] = int(re.findall(r'\d+', (''.join(re.findall(r'frames,(.*)bytes transmitted', intf_output))))[0])
+        data_dict['credit_loss'] = int(re.findall(r'\d+', (''.join(re.findall(r',(.*)credit loss', intf_output))))[0])
+        data_dict['link_failures'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)link failures', intf_output))))[0])
+        data_dict['sync_loss'] = int(re.findall(r'\d+', (''.join(re.findall(r',(.*)sync loss', intf_output))))[0])
+        data_dict['signal_loss'] = int(re.findall(r'\d+', (''.join(re.findall(r',(.*)signal', intf_output))))[0])
+        data_dict['itw'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)invalid transmission words', intf_output))))[0])
+        data_dict['crc'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)invalid CRC', intf_output))))[0])
+        data_dict['rx_lr'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)link reset received', intf_output))))[0])
+        data_dict['tx_lr'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)link reset transmitted', intf_output))))[0])
+        data_dict['rx_lrr'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)link reset responses received', intf_output))))[0])
+        data_dict['tx_lrr'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)link reset responses transmitted', intf_output))))[0])
+        data_dict['fec_corrected'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)fec corrected', intf_output))))[0])
+        data_dict['fec_uncorrected'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)fec uncorrected', intf_output))))[0])
+        data_dict['timeout_discards'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)timeout discards', intf_output))))[0])
+        data_dict['rx_discard'] = int(''.join((re.findall(r'\d+', (''.join(re.findall(r'(.*) discards',(re.findall(r'\n(.*)errors received', intf_output)[0]))))))))
+        data_dict['tx_discard'] = int(''.join((re.findall(r'\d+', (''.join(re.findall(r'(.*) discards',(re.findall(r'\n(.*)errors transmitted', intf_output)[0]))))))))
+        data_dict['rx_error'] = int(re.findall(r'\d+', (''.join(re.findall(r',(.*)errors received', intf_output))))[0])
+        data_dict['tx_error'] = int(re.findall(r'\d+', (''.join(re.findall(r',(.*)errors transmitted', intf_output))))[0])
+
+        txwait_list = re.findall(r'\d+', ''.join(re.findall(r'\d+(?:.*) 2.5us', intf_output)))
+        if len(txwait_list) != 0:
+            data_dict['txwait'] = int(txwait_list[0])
+
+        tx_b2b_list = re.findall(r'\d+', ''.join(re.findall(r'\d+(?:.*) Transmit B2B credit', intf_output)))
+        if len(tx_b2b_list) != 0:
+            data_dict['tx_b2b_credit_to_zero'] = int(tx_b2b_list[0])
+
+        rx_b2b_list = re.findall(r'\d+', ''.join(re.findall(r'\d+(?:.*) Receive B2B credit', intf_output)))
+        if len(rx_b2b_list) != 0:
+            data_dict['rx_b2b_credit_to_zero'] = int(rx_b2b_list[0])
+
+def parse_sh_int_counters_ascii(switch_ip, cmd_body, per_switch_stats_dict):
+    """
+    show interface counters detail - raw response, not JSON or XML
+    """
+    logger.info('parse_sh_int_counters_ascii for %s', switch_ip)
+    logger.debug('%s', cmd_body)
+
+    port_dict = per_switch_stats_dict['ports']
+    if 'sys_ver' not in per_switch_stats_dict:
+        logger.warning('sys_ver not found for %s', switch_ip)
+    else:
+        logger.info('NX-OS version for %s: %s', switch_ip,
+                                             per_switch_stats_dict['sys_ver'])
+
+    fc_cmd_list = []
+    if 'fc' in cmd_body:
+        fc_cmd_list = cmd_body.split('fc')
+
+    pc_cmd_list = []
+    if 'port-channel' in cmd_body:
+        pc_cmd_list = cmd_body.split('port-channel')
+
+    for intf_output in fc_cmd_list:
+        if intf_output == '':
+            continue
+
+        interface = 'fc' + (intf_output.split('\n')[0]).strip()
+
+        intf_list = interface.split('/')
+        port_id = intf_list[1]
+        if len(port_id) == 1:
+            port_id = '0' + port_id
+            interface = intf_list[0] + '/' + port_id
+
+        logger.debug('Filling counters detailed for %s-', interface)
+        if interface not in port_dict:
+            port_dict[interface] = {}
+        per_port_dict = port_dict[interface]
+
+        if 'data' not in per_port_dict:
+            per_port_dict['data'] = {}
+        data_dict = per_port_dict['data']
+
+        fill_data_from_body(data_dict, intf_output)
+
+
+    for intf_output in pc_cmd_list:
+        if intf_output == '':
+            continue
+
+        pc_num = ''.join(re.findall(r'\d+', (intf_output.split('\n'))[0]))
+        interface = 'port-channel' + pc_num
+        logger.debug('Filling counters detailed for %s-', interface)
+        if interface not in port_dict:
+            port_dict[interface] = {}
+        per_port_dict = port_dict[interface]
+
+        if 'data' not in per_port_dict:
+            per_port_dict['data'] = {}
+        data_dict = per_port_dict['data']
+
+        fill_data_from_body(data_dict, intf_output)
+
+    logger.info('Done: parse_sh_int_counters_ascii for %s', switch_ip)
+
 def parse_sh_int_counters(switch_ip, cmd_body, per_switch_stats_dict):
     """
     show interface counters detail
     """
+    if user_args['intf_cntr_str']:
+        parse_sh_int_counters_ascii(switch_ip, cmd_body, per_switch_stats_dict)
+        return
+
     logger.info('parse_sh_int_counters for %s', switch_ip)
 
     port_dict = per_switch_stats_dict['ports']
@@ -1379,10 +1486,19 @@ def get_switch_stats():
         logger.info('Prebuilt FC interface string:%s', intf_fc_str)
         logger.info('Prebuilt port-channel interface string:%s', intf_pc_str)
 
-        count_det_fc = 'show interface counters detailed'
-        count_det_val = [parse_sh_int_counters, 'cli']
-        count_det_dict = {count_det_fc:count_det_val}
-        fn_dispatcher_2_intf_str.append(count_det_dict)
+        if user_args['intf_cntr_str']:
+            count_det_fc = 'show interface ' + intf_fc_str + ' counters detailed'
+            count_det_val = [parse_sh_int_counters, 'cli_ascii']
+            count_det_dict = {count_det_fc:count_det_val}
+            if intf_pc_str != '':
+                count_det_pc = 'show interface ' + intf_pc_str + ' counters detailed'
+                count_det_dict[count_det_pc] = count_det_val
+            fn_dispatcher_2_intf_str.append(count_det_dict)
+        else:
+            count_det_fc = 'show interface counters detailed'
+            count_det_val = [parse_sh_int_counters, 'cli']
+            count_det_dict = {count_det_fc:count_det_val}
+            fn_dispatcher_2_intf_str.append(count_det_dict)
 
         trans_det_fc = 'show interface ' + intf_fc_str + ' transceiver details'
         trans_det_val = [parse_sh_int_trans, 'cli']
