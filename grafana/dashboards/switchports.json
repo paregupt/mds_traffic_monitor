@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 2,
-  "iteration": 1609728848673,
+  "iteration": 1610151871848,
   "links": [],
   "panels": [
     {
@@ -155,7 +155,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Switch"
+              "options": "Switch Address"
             },
             "properties": [
               {
@@ -254,7 +254,7 @@
           ],
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT switchname as \"SwitchName\" FROM \"$db\".\"$rp\".\"Switches\" WHERE (\"switch\" =~ /^$switch$/) AND  $timeFilter order by time desc limit 1",
+          "query": "SELECT switchname as \"Switch Name\" FROM \"$db\".\"$rp\".\"Switches\" WHERE (\"switch\" =~ /^$switch$/) AND  $timeFilter order by time desc limit 1",
           "rawQuery": true,
           "refId": "B",
           "resultFormat": "table",
@@ -297,7 +297,7 @@
                 "Speed (G)",
                 "Member of Port-Channel",
                 "PWWN",
-                "SwitchName"
+                "Switch Name"
               ]
             }
           }
@@ -314,12 +314,12 @@
               "Operational State": 6,
               "PWWN": 9,
               "Speed (G)": 4,
-              "SwitchName": 2,
+              "Switch Name": 2,
               "switch": 1,
               "switchport": 3
             },
             "renameByName": {
-              "switch": "Switch",
+              "switch": "Switch Address",
               "switchport": "Port"
             }
           }
@@ -566,7 +566,7 @@
       "seriesOverrides": [
         {
           "$$hashKey": "object:924",
-          "alias": "Max port-channel1",
+          "alias": "/Max/",
           "fill": 0,
           "fillGradient": 0,
           "points": true,
@@ -2961,8 +2961,8 @@
         "allValue": null,
         "current": {
           "selected": false,
-          "text": "172.22.163.48",
-          "value": "172.22.163.48"
+          "text": "",
+          "value": ""
         },
         "datasource": "$data_source",
         "definition": "",
@@ -2989,10 +2989,10 @@
         "current": {
           "selected": false,
           "text": [
-            "fc4/24"
+            ""
           ],
           "value": [
-            "fc4/24"
+            ""
           ]
         },
         "datasource": "$data_source",
@@ -3052,5 +3052,5 @@
   "timezone": "",
   "title": "MTM - MDS Switchports",
   "uid": "qxGcp0bGk",
-  "version": 46
+  "version": 48
 }

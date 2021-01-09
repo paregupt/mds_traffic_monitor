@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 6,
-  "iteration": 1609773134888,
+  "iteration": 1610074042825,
   "links": [],
   "panels": [
     {
@@ -117,7 +117,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 2,
         "x": 0,
         "y": 3
@@ -205,7 +205,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 2,
         "x": 2,
         "y": 3
@@ -274,6 +274,452 @@
       "type": "stat"
     },
     {
+      "datasource": "$data_source",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "center",
+            "filterable": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Speed (G)"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "light-red",
+                      "value": null
+                    },
+                    {
+                      "color": "#7eb26d",
+                      "value": 1
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "color-background"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Switch Port"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": false,
+                    "title": "Details of ${__value.raw} in ${__data.fields[switch]}",
+                    "url": "d/qxGcp0bGk/mds-switchport-monitoring?orgId=1&var-switch=${__data.fields[switch]}&var-switchport=${__value.raw}\r"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Operational State"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 140
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Member of Port-Channel"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 170
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PWWN"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 200
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Oper Mode"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Switch Address"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": false,
+                    "title": "Details of switch ${__value.raw}",
+                    "url": "d/WoIYF-xGz/mds-switch-monitoring?orgId=1&var-switch=${__value.raw}\r"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Switch Name"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Details of switch ${__data.fields[switch]}",
+                    "url": "d/WoIYF-xGz/mds-switch-monitoring?orgId=1&var-switch=${__data.fields[switch]}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Down Reason"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 200
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 20,
+        "x": 4,
+        "y": 3
+      },
+      "id": 100,
+      "interval": "",
+      "links": [],
+      "maxDataPoints": 1,
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "Operational State"
+          }
+        ]
+      },
+      "pluginVersion": "7.3.6",
+      "targets": [
+        {
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT switchname as \"Switch Name\", location as \"Location\",description as \"Description\", oper_state as \"Operational State\", oper_mode as \"Oper Mode\", port_down_reason as \"Down Reason\", oper_speed as \"Speed (G)\", pc as \"Member of Port-Channel\", pwwn as \"PWWN\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"location\" =~ /^$location$/) AND  $timeFilter GROUP BY switch,switchport order by time desc limit 1",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Switch Port Inventory",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "chassis": true,
+              "domain": true,
+              "id": true,
+              "service_profile": false,
+              "switch": false
+            },
+            "indexByName": {
+              "Description": 5,
+              "Down Reason": 7,
+              "Location": 0,
+              "Member of Port-Channel": 10,
+              "Oper Mode": 8,
+              "Operational State": 6,
+              "PWWN": 11,
+              "Speed (G)": 9,
+              "Switch Name": 2,
+              "Time": 1,
+              "switch": 3,
+              "switchport": 4
+            },
+            "renameByName": {
+              "oper_state_code": " _",
+              "service_profile": "Service Profile",
+              "switch": "Switch Address",
+              "switchport": "Switch Port"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": "$data_source",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "semi-dark-purple",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 0,
+        "y": 8
+      },
+      "id": 98,
+      "interval": "",
+      "maxDataPoints": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.3.6",
+      "targets": [
+        {
+          "alias": "$col",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "select count(last) from (SELECT last(\"crc\") FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"location\" =~ /^$location$/ AND \"pc\" != '') and $timeFilter GROUP BY switch,switchport) where $timeFilter",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "# FC Ports in $location",
+      "type": "stat"
+    },
+    {
+      "datasource": "$data_source",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 2,
+        "y": 8
+      },
+      "id": 103,
+      "interval": "",
+      "maxDataPoints": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "7.3.6",
+      "targets": [
+        {
+          "alias": "$col",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "select count(last) from (SELECT last(\"crc\") FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"location\" =~ /^$location$/ AND \"pc\" = '') and $timeFilter GROUP BY switch,switchport) where $timeFilter",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "# FC Port-Channel in $location",
+      "type": "stat"
+    },
+    {
       "aliasColors": {},
       "bars": true,
       "dashLength": 10,
@@ -291,8 +737,8 @@
       "gridPos": {
         "h": 5,
         "w": 6,
-        "x": 4,
-        "y": 3
+        "x": 0,
+        "y": 12
       },
       "hiddenSeries": false,
       "id": 94,
@@ -310,7 +756,7 @@
       },
       "lines": false,
       "linewidth": 1,
-      "maxDataPoints": 6,
+      "maxDataPoints": 10,
       "nullPointMode": "null",
       "options": {
         "alertThreshold": true
@@ -406,7 +852,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "FC Port state",
+      "title": "FC Port State",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -447,280 +893,60 @@
       }
     },
     {
+      "aliasColors": {
+        "Admin Down": "semi-dark-red",
+        "Link failure or not-connected": "light-orange",
+        "SFP not present": "light-yellow"
+      },
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
       "datasource": "$data_source",
+      "decimals": 0,
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": "center",
-            "filterable": true
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Speed (G)"
-            },
-            "properties": [
-              {
-                "id": "thresholds",
-                "value": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "light-red",
-                      "value": null
-                    },
-                    {
-                      "color": "#7eb26d",
-                      "value": 1
-                    }
-                  ]
-                }
-              },
-              {
-                "id": "custom.displayMode",
-                "value": "color-background"
-              },
-              {
-                "id": "custom.width",
-                "value": 90
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Switch port"
-            },
-            "properties": [
-              {
-                "id": "links",
-                "value": [
-                  {
-                    "targetBlank": true,
-                    "title": "Details of ${__value.raw} in ${__data.fields[switch]}",
-                    "url": "d/qxGcp0bGk/mds-switchport-monitoring?orgId=1&var-switch=${__data.fields[switch]}&var-switchport=${__value.raw}\r"
-                  }
-                ]
-              },
-              {
-                "id": "custom.width",
-                "value": 146
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Operational State"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 143
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Member of Port-Channel"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 210
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "PWWN"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 204
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Oper Mode"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 122
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Switch"
-            },
-            "properties": [
-              {
-                "id": "links",
-                "value": [
-                  {
-                    "targetBlank": true,
-                    "title": "Details of switch ${__value.raw}",
-                    "url": "d/WoIYF-xGz/mds-switch-monitoring?orgId=1&var-switch=${__value.raw}\r"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 15,
-        "w": 14,
-        "x": 10,
-        "y": 3
-      },
-      "id": 100,
-      "interval": "",
-      "links": [],
-      "maxDataPoints": 1,
-      "options": {
-        "showHeader": true,
-        "sortBy": [
-          {
-            "desc": false,
-            "displayName": "Switch port"
-          }
-        ]
-      },
-      "pluginVersion": "7.3.6",
-      "targets": [
-        {
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT description as \"Description\", oper_state as \"Operational State\", oper_mode as \"Oper Mode\", oper_speed as \"Speed (G)\", pc as \"Member of Port-Channel\", pwwn as \"PWWN\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"location\" =~ /^$location$/) AND  $timeFilter GROUP BY switch,switchport order by time desc limit 1",
-          "rawQuery": true,
-          "refId": "A",
-          "resultFormat": "table",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": []
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Switch ports",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": true,
-              "chassis": true,
-              "domain": true,
-              "id": true,
-              "service_profile": false,
-              "switch": false
-            },
-            "indexByName": {},
-            "renameByName": {
-              "oper_state_code": " _",
-              "service_profile": "Service Profile",
-              "switch": "Switch",
-              "switchport": "Switch port"
-            }
-          }
-        }
-      ],
-      "type": "table"
-    },
-    {
-      "datasource": "$data_source",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {},
-          "mappings": [],
-          "noValue": "0",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "semi-dark-purple",
-                "value": null
-              }
-            ]
-          }
+          "custom": {}
         },
         "overrides": []
       },
+      "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
-        "h": 4,
-        "w": 2,
-        "x": 0,
-        "y": 7
+        "h": 5,
+        "w": 6,
+        "x": 6,
+        "y": 12
       },
-      "id": 98,
+      "hiddenSeries": false,
+      "id": 152,
       "interval": "",
-      "maxDataPoints": 1,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": true
       },
+      "lines": false,
+      "linewidth": 1,
+      "maxDataPoints": 10,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
       "pluginVersion": "7.3.6",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
       "targets": [
         {
           "alias": "$col",
@@ -740,9 +966,9 @@
           ],
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "select count(last) from (SELECT last(\"crc\") FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"location\" =~ /^$location$/ AND \"pc\" != '') and $timeFilter GROUP BY time($__interval),switch,switchport) where $timeFilter GROUP BY time($__interval)",
+          "query": "select count(last) AS \"Admin Down\" from (SELECT last(\"crc\") FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"location\" =~ /^$location$/ AND \"pc\" != '' AND \"port_down_reason\" = 'Administratively down') and $timeFilter GROUP BY time($__interval),switch,switchport) where $timeFilter GROUP BY time($__interval)",
           "rawQuery": true,
-          "refId": "A",
+          "refId": "B",
           "resultFormat": "time_series",
           "select": [
             [
@@ -759,57 +985,7 @@
             ]
           ],
           "tags": []
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "# FC Ports in $location",
-      "type": "stat"
-    },
-    {
-      "datasource": "$data_source",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {},
-          "mappings": [],
-          "noValue": "0",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "dark-blue",
-                "value": null
-              }
-            ]
-          }
         },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 2,
-        "x": 2,
-        "y": 7
-      },
-      "id": 103,
-      "interval": "",
-      "maxDataPoints": 1,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "value"
-      },
-      "pluginVersion": "7.3.6",
-      "targets": [
         {
           "alias": "$col",
           "groupBy": [
@@ -828,7 +1004,7 @@
           ],
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "select count(last) from (SELECT last(\"crc\") FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"location\" =~ /^$location$/ AND \"pc\" = '') and $timeFilter GROUP BY time($__interval),switch,switchport) where $timeFilter GROUP BY time($__interval)",
+          "query": "select count(last) AS \"Link failure or not-connected\" from (SELECT last(\"crc\") FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"location\" =~ /^$location$/ AND \"pc\" != '' AND \"port_down_reason\" = 'Link failure or not-connected') and $timeFilter GROUP BY time($__interval),switch,switchport) where $timeFilter GROUP BY time($__interval)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -847,12 +1023,127 @@
             ]
           ],
           "tags": []
+        },
+        {
+          "alias": "$col",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "select count(last) AS \"SFP not present\" from (SELECT last(\"crc\") FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"location\" =~ /^$location$/ AND \"pc\" != '' AND \"port_down_reason\" = 'SFP not present') and $timeFilter GROUP BY time($__interval),switch,switchport) where $timeFilter GROUP BY time($__interval)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "$col",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "select count(last) AS \"Error disabled\" from (SELECT last(\"crc\") FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"location\" =~ /^$location$/ AND \"pc\" != '' AND \"port_down_reason\" =~ /Error disabled/) and $timeFilter GROUP BY time($__interval),switch,switchport) where $timeFilter GROUP BY time($__interval)",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
         }
       ],
+      "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
-      "title": "# FC Port-Channel in $location",
-      "type": "stat"
+      "title": "FC Port Down Reason",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1046",
+          "decimals": 0,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1047",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {
@@ -876,8 +1167,8 @@
       "gridPos": {
         "h": 5,
         "w": 6,
-        "x": 4,
-        "y": 8
+        "x": 12,
+        "y": 12
       },
       "hiddenSeries": false,
       "id": 93,
@@ -895,7 +1186,7 @@
       },
       "lines": false,
       "linewidth": 1,
-      "maxDataPoints": 6,
+      "maxDataPoints": 10,
       "nullPointMode": "null",
       "options": {
         "alertThreshold": true
@@ -1143,7 +1434,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "FC Port Speeds",
+      "title": "FC Port Speed",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1184,93 +1475,6 @@
       }
     },
     {
-      "datasource": "$data_source",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-GrYlRd"
-          },
-          "custom": {},
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "s"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 4,
-        "x": 0,
-        "y": 11
-      },
-      "id": 150,
-      "options": {
-        "displayMode": "gradient",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "last"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showUnfilled": true
-      },
-      "pluginVersion": "7.3.6",
-      "targets": [
-        {
-          "alias": "$tag_switch",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT \"response_time\" as \"Response Time\" FROM \"$db\".\"$rp\".\"Switches\" WHERE (\"location\" =~ /^$location$/) and $timeFilter GROUP BY switch",
-          "rawQuery": true,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": []
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Polling Response Time",
-      "type": "bargauge"
-    },
-    {
       "aliasColors": {
         "F": "rgb(203, 255, 112)",
         "TF": "rgb(248, 57, 255)"
@@ -1291,8 +1495,8 @@
       "gridPos": {
         "h": 5,
         "w": 6,
-        "x": 4,
-        "y": 13
+        "x": 18,
+        "y": 12
       },
       "hiddenSeries": false,
       "id": 97,
@@ -1310,7 +1514,7 @@
       },
       "lines": false,
       "linewidth": 1,
-      "maxDataPoints": 6,
+      "maxDataPoints": 10,
       "nullPointMode": "null",
       "options": {
         "alertThreshold": true
@@ -1444,7 +1648,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "FC Port mode",
+      "title": "FC Port Mode",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1488,6 +1692,9 @@
       "datasource": "$data_source",
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
           "custom": {
             "align": "center",
             "filterable": true
@@ -1507,22 +1714,18 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Switch"
+              "options": "Switch Address"
             },
             "properties": [
               {
                 "id": "links",
                 "value": [
                   {
-                    "targetBlank": true,
+                    "targetBlank": false,
                     "title": "Details of switch ${__value.raw}",
                     "url": "d/WoIYF-xGz/mds-switch-monitoring?orgId=1&var-switch=${__value.raw}\r"
                   }
                 ]
-              },
-              {
-                "id": "custom.width",
-                "value": 200
               }
             ]
           },
@@ -1581,12 +1784,26 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Location"
+              "options": "NXAPI Response Time"
             },
             "properties": [
               {
-                "id": "custom.width",
-                "value": 200
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "gradient-gauge"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-GrYlRd"
+                }
+              },
+              {
+                "id": "max",
+                "value": 30
               }
             ]
           },
@@ -1597,44 +1814,13 @@
             },
             "properties": [
               {
-                "id": "custom.width",
-                "value": 200
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Systerm Uptime"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 150
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Kernel Uptime"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 150
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Switch type"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 300
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Details of switch ${__data.fields[switch]}",
+                    "url": "d/WoIYF-xGz/mds-switch-monitoring?orgId=1&var-switch=${__data.fields[switch]}"
+                  }
+                ]
               }
             ]
           }
@@ -1644,7 +1830,7 @@
         "h": 11,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 17
       },
       "id": 148,
       "interval": "",
@@ -1652,7 +1838,12 @@
       "maxDataPoints": 1,
       "options": {
         "showHeader": true,
-        "sortBy": []
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "Switch Name"
+          }
+        ]
       },
       "pluginVersion": "7.3.6",
       "targets": [
@@ -1673,7 +1864,7 @@
           ],
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT switchname as \"Switch Name\", sys_uptime as \"Systerm Uptime\", kernel_uptime as \"Kernel Uptime\", chassis_id as \"Switch type\", cpu_kernel as \"CPU Util - Kernel\", cpu_user as \"CPU Util - User\", (\"mem_used\")/(\"mem_total\")*100 as \"Memory Util\" FROM \"$db\".\"$rp\".\"Switches\" WHERE (\"location\" =~ /^$location$/) AND  $timeFilter GROUP BY switch,location order by time desc limit 1",
+          "query": "SELECT switchname as \"Switch Name\", sys_ver as \"NX-OS Version\", sys_uptime as \"Systerm Uptime\", kernel_uptime as \"Kernel Uptime\", chassis_id as \"Switch Type\", cpu_kernel as \"CPU Util - Kernel\", cpu_user as \"CPU Util - User\", (\"mem_used\")/(\"mem_total\")*100 as \"Memory Util\", response_time as \"NXAPI Response Time\" FROM \"$db\".\"$rp\".\"Switches\" WHERE (\"location\" =~ /^$location$/) AND  $timeFilter GROUP BY switch,location order by time desc limit 1",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "table",
@@ -1696,7 +1887,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Switches",
+      "title": "Switch Inventory",
       "transformations": [
         {
           "id": "organize",
@@ -1709,12 +1900,25 @@
               "service_profile": false,
               "switch": false
             },
-            "indexByName": {},
+            "indexByName": {
+              "CPU Util - Kernel": 8,
+              "CPU Util - User": 9,
+              "Kernel Uptime": 7,
+              "Memory Util": 10,
+              "NX-OS Version": 5,
+              "NXAPI Response Time": 11,
+              "Switch Name": 2,
+              "Switch Type": 4,
+              "Systerm Uptime": 6,
+              "Time": 0,
+              "location": 1,
+              "switch": 3
+            },
             "renameByName": {
               "location": "Location",
               "oper_state_code": " _",
               "service_profile": "Service Profile",
-              "switch": "Switch",
+              "switch": "Switch Address",
               "switchport": "Switch port"
             }
           }
@@ -1729,7 +1933,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 29
+        "y": 28
       },
       "id": 102,
       "panels": [
@@ -7071,5 +7275,5 @@
   "timezone": "",
   "title": "MTM - Locations",
   "uid": "i56djUbMz",
-  "version": 38
+  "version": 55
 }
