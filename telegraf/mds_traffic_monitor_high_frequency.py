@@ -3,7 +3,7 @@
 desired output format"""
 
 __author__ = "Paresh Gupta"
-__version__ = "0.06"
+__version__ = "0.07"
 
 import sys
 import os
@@ -212,8 +212,12 @@ def print_output_in_influxdb_lp(switch_ip, per_switch_stats_dict):
 
     switch_tags = switch_tags + ',switch=' + switch_ip
 
+    if 'response_time' in per_switch_stats_dict:
+        switch_fields = switch_fields + ' response_time=' + \
+                        str(per_switch_stats_dict['response_time'])
+
     if 'chassis_id' in per_switch_stats_dict:
-        switch_fields = switch_fields + ' chassis_id="' + \
+        switch_fields = switch_fields + ',chassis_id="' + \
                         per_switch_stats_dict['chassis_id'] + '"'
 
     if 'cpu_kernel' in per_switch_stats_dict:
@@ -252,10 +256,6 @@ def print_output_in_influxdb_lp(switch_ip, per_switch_stats_dict):
         switch_fields = switch_fields + ',kernel_uptime=' + \
                         str(per_switch_stats_dict['kernel_uptime'])
 
-    if 'response_time' in per_switch_stats_dict:
-        switch_fields = switch_fields + ',response_time=' + \
-                        str(per_switch_stats_dict['response_time'])
-
     switch_fields = switch_fields + '\n'
     final_print_string = final_print_string + switch_prefix + \
                          switch_tags + switch_fields
@@ -273,7 +273,7 @@ def print_output_in_influxdb_lp(switch_ip, per_switch_stats_dict):
 
         for key, val in sorted((per_port_dict['meta']).items()):
             # Avoid null tags
-            if '' == str(val):
+            if str(val) == '':
                 continue
             port_tags = port_tags + ',' + key + '=' + str(val)
 
@@ -282,8 +282,7 @@ def print_output_in_influxdb_lp(switch_ip, per_switch_stats_dict):
 
         for key, val in sorted((per_port_dict['data']).items()):
             sep = ' ' if port_fields == '' else ','
-            if key == 'description' or key == 'pwwn' or \
-                key == 'port_down_reason':
+            if key in ('description', 'pwwn', 'port_down_reason'):
                 port_fields = port_fields + sep + key + '="' + str(val) + '"'
             else:
                 port_fields = port_fields + sep + key + '=' + str(val)
@@ -509,37 +508,37 @@ def parse_sh_portc_u(switch_ip, cmd_body, per_switch_stats_dict):
     logger.info('Done: parse_sh_portc_u for %s %s', switch_ip, intf_pc_str)
 
 def fill_data_from_body(data_dict, intf_output):
-        data_dict['rx_bytes'] = int(re.findall(r'\d+', (''.join(re.findall(r'frames,(.*)bytes received', intf_output))))[0])
-        data_dict['tx_bytes'] = int(re.findall(r'\d+', (''.join(re.findall(r'frames,(.*)bytes transmitted', intf_output))))[0])
-        data_dict['credit_loss'] = int(re.findall(r'\d+', (''.join(re.findall(r',(.*)credit loss', intf_output))))[0])
-        data_dict['link_failures'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)link failures', intf_output))))[0])
-        data_dict['sync_loss'] = int(re.findall(r'\d+', (''.join(re.findall(r',(.*)sync loss', intf_output))))[0])
-        data_dict['signal_loss'] = int(re.findall(r'\d+', (''.join(re.findall(r',(.*)signal', intf_output))))[0])
-        data_dict['itw'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)invalid transmission words', intf_output))))[0])
-        data_dict['crc'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)invalid CRC', intf_output))))[0])
-        data_dict['rx_lr'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)link reset received', intf_output))))[0])
-        data_dict['tx_lr'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)link reset transmitted', intf_output))))[0])
-        data_dict['rx_lrr'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)link reset responses received', intf_output))))[0])
-        data_dict['tx_lrr'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)link reset responses transmitted', intf_output))))[0])
-        data_dict['fec_corrected'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)fec corrected', intf_output))))[0])
-        data_dict['fec_uncorrected'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)fec uncorrected', intf_output))))[0])
-        data_dict['timeout_discards'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)timeout discards', intf_output))))[0])
-        data_dict['rx_discard'] = int(''.join((re.findall(r'\d+', (''.join(re.findall(r'(.*) discards',(re.findall(r'\n(.*)errors received', intf_output)[0]))))))))
-        data_dict['tx_discard'] = int(''.join((re.findall(r'\d+', (''.join(re.findall(r'(.*) discards',(re.findall(r'\n(.*)errors transmitted', intf_output)[0]))))))))
-        data_dict['rx_error'] = int(re.findall(r'\d+', (''.join(re.findall(r',(.*)errors received', intf_output))))[0])
-        data_dict['tx_error'] = int(re.findall(r'\d+', (''.join(re.findall(r',(.*)errors transmitted', intf_output))))[0])
+    data_dict['rx_bytes'] = int(re.findall(r'\d+', (''.join(re.findall(r'frames,(.*)bytes received', intf_output))))[0])
+    data_dict['tx_bytes'] = int(re.findall(r'\d+', (''.join(re.findall(r'frames,(.*)bytes transmitted', intf_output))))[0])
+    data_dict['credit_loss'] = int(re.findall(r'\d+', (''.join(re.findall(r',(.*)credit loss', intf_output))))[0])
+    data_dict['link_failures'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)link failures', intf_output))))[0])
+    data_dict['sync_loss'] = int(re.findall(r'\d+', (''.join(re.findall(r',(.*)sync loss', intf_output))))[0])
+    data_dict['signal_loss'] = int(re.findall(r'\d+', (''.join(re.findall(r',(.*)signal', intf_output))))[0])
+    data_dict['itw'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)invalid transmission words', intf_output))))[0])
+    data_dict['crc'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)invalid CRC', intf_output))))[0])
+    data_dict['rx_lr'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)link reset received', intf_output))))[0])
+    data_dict['tx_lr'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)link reset transmitted', intf_output))))[0])
+    data_dict['rx_lrr'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)link reset responses received', intf_output))))[0])
+    data_dict['tx_lrr'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)link reset responses transmitted', intf_output))))[0])
+    data_dict['fec_corrected'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)fec corrected', intf_output))))[0])
+    data_dict['fec_uncorrected'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)fec uncorrected', intf_output))))[0])
+    data_dict['timeout_discards'] = int(re.findall(r'\d+', (''.join(re.findall(r'\n(.*)timeout discards', intf_output))))[0])
+    data_dict['rx_discard'] = int(''.join((re.findall(r'\d+', (''.join(re.findall(r'(.*) discards',(re.findall(r'\n(.*)errors received', intf_output)[0]))))))))
+    data_dict['tx_discard'] = int(''.join((re.findall(r'\d+', (''.join(re.findall(r'(.*) discards',(re.findall(r'\n(.*)errors transmitted', intf_output)[0]))))))))
+    data_dict['rx_error'] = int(re.findall(r'\d+', (''.join(re.findall(r',(.*)errors received', intf_output))))[0])
+    data_dict['tx_error'] = int(re.findall(r'\d+', (''.join(re.findall(r',(.*)errors transmitted', intf_output))))[0])
 
-        txwait_list = re.findall(r'\d+', ''.join(re.findall(r'\d+(?:.*) 2.5us', intf_output)))
-        if len(txwait_list) != 0:
-            data_dict['txwait'] = int(txwait_list[0])
+    txwait_list = re.findall(r'\d+', ''.join(re.findall(r'\d+(?:.*) 2.5us', intf_output)))
+    if len(txwait_list) != 0:
+        data_dict['txwait'] = int(txwait_list[0])
 
-        tx_b2b_list = re.findall(r'\d+', ''.join(re.findall(r'\d+(?:.*) Transmit B2B credit', intf_output)))
-        if len(tx_b2b_list) != 0:
-            data_dict['tx_b2b_credit_to_zero'] = int(tx_b2b_list[0])
+    tx_b2b_list = re.findall(r'\d+', ''.join(re.findall(r'\d+(?:.*) Transmit B2B credit', intf_output)))
+    if len(tx_b2b_list) != 0:
+        data_dict['tx_b2b_credit_to_zero'] = int(tx_b2b_list[0])
 
-        rx_b2b_list = re.findall(r'\d+', ''.join(re.findall(r'\d+(?:.*) Receive B2B credit', intf_output)))
-        if len(rx_b2b_list) != 0:
-            data_dict['rx_b2b_credit_to_zero'] = int(rx_b2b_list[0])
+    rx_b2b_list = re.findall(r'\d+', ''.join(re.findall(r'\d+(?:.*) Receive B2B credit', intf_output)))
+    if len(rx_b2b_list) != 0:
+        data_dict['rx_b2b_credit_to_zero'] = int(rx_b2b_list[0])
 
 def parse_sh_int_counters_ascii(switch_ip, cmd_body, per_switch_stats_dict):
     """
@@ -1358,7 +1357,14 @@ def mds_nxapi_connect(switch_ip, switchuser, switchpassword, protocol, port,
         verify = True
 
     response = requests.post(url, data=json.dumps(payload_list), headers=headers,
-                             auth=(switchuser,switchpassword), verify=verify).json()
+                             auth=(switchuser,switchpassword), verify=verify)
+
+    if not response.ok:
+        logger.error('NXAPI error from %s:%s:%s', switch_ip, \
+            response.status_code, requests.status_codes._codes[response.status_code])
+        return None
+
+    response = response.json()
 
     if user_args.get('raw_dump'):
         current_log_level = logger.level
@@ -1428,9 +1434,10 @@ def connect_and_pull_stats(executor):
                                  dispatcher)
 
     nxapi_rsp = time.time()
-    logger.info('Received from %s for %s', switch_ip, [*dispatcher])
+    if response:
+        logger.info('Received from %s for %s', switch_ip, [*dispatcher])
 
-    update_stats_dict(switch_ip, raw_api_stats[switch_ip],
+        update_stats_dict(switch_ip, raw_api_stats[switch_ip],
                       stats_dict[switch_ip], dispatcher)
 
     nxapi_parse = time.time()
@@ -1469,9 +1476,18 @@ def get_switch_stats():
 
     logger.debug('Connect and pull stats: executor_list : %s', executor_list)
 
+    future_rsp_list = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=len(executor_list)) as e:
         for executor in executor_list:
-            e.submit(connect_and_pull_stats, executor)
+            future_rsp = e.submit(connect_and_pull_stats, executor)
+            future_rsp_list.append(future_rsp)
+        for future in concurrent.futures.as_completed(future_rsp_list):
+            try:
+                rsp = future.result()
+                logger.info('Response received as completed:%s', rsp)
+            except Exception as excp:
+                logger.exception('Exception: %s', excp)
+
     '''
     for executor in executor_list:
         connect_and_pull_stats(executor)
@@ -1530,9 +1546,18 @@ def get_switch_stats():
 
     logger.debug('Connect and pull stats: executor_list : %s', executor_list)
 
+    future_rsp_list = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=len(executor_list)) as e:
         for executor in executor_list:
-            e.submit(connect_and_pull_stats, executor)
+            future_rsp = e.submit(connect_and_pull_stats, executor)
+            future_rsp_list.append(future_rsp)
+        for future in concurrent.futures.as_completed(future_rsp_list):
+            try:
+                rsp = future.result()
+                logger.info('Response received as completed:%s', rsp)
+            except Exception as excp:
+                logger.exception('Exception: %s', excp)
+
     '''
     for executor in executor_list:
         connect_and_pull_stats(executor)
@@ -1542,6 +1567,9 @@ def get_switch_stats():
 ###############################################################################
 # END: Connection and Collector functions
 ###############################################################################
+
+# In paylod, "method": "cli_ascii" gets raw output.
+# "method": "cli" gets data in JSON format
 
 fn_dispatcher_1 = [
     {
@@ -1588,8 +1616,8 @@ def main(argv):
     # Connect and pull stats
     try:
         get_switch_stats()
-    except Exception as e:
-        logger.exception('Exception with get_switch_stats')
+    except Exception as excp:
+        logger.error('Exception with get_switch_stats:%s', str(excp))
     connect_time = time.time()
 
     # Print the stats as per the desired output format
@@ -1598,8 +1626,8 @@ def main(argv):
             stats_dict[switch_ip]['response_time'] = \
                         round((connect_time - input_read_time), 3)
             print_output(switch_ip, stats_dict[switch_ip])
-    except Exception as e:
-        logger.exception('Exception with print_output:%s', (str)(e))
+    except Exception as excp:
+        logger.exception('Exception with print_output:%s', (str)(excp))
 
     output_time = time.time()
 
