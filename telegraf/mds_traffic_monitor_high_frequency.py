@@ -3,7 +3,7 @@
 desired output format"""
 
 __author__ = "Paresh Gupta"
-__version__ = "0.09"
+__version__ = "0.10"
 
 import sys
 import os
@@ -388,8 +388,8 @@ def parse_sh_ver(switch_ip, cmd_body, per_switch_stats_dict):
 
     #   System version: 8.4(1a)
     per_switch_stats_dict['sys_ver'] = \
-                ''.join(re.findall(r'System version:[ ]{1,}(.*)',
-                                   cmd_body, re.IGNORECASE))
+                ''.join(re.findall(r'system:[ ]{1,}version[ ]{1,}(.*)',
+                                   cmd_body))
 
     #   Device name: MDS9710-A
     per_switch_stats_dict['switchname'] = \
@@ -1290,12 +1290,17 @@ def fill_data_from_sh_int_count_det(per_port_dict, intf_body):
 
     if 'VL' in intf_body:
         # Add the values of all the VLs
-        txwait_list = (''.join(re.findall(r'TxWait .* VL 0-3:(.*)', \
-                                          intf_body))).split(',')
-        txwait = 0
-        for per_vl_txwait in txwait_list:
-            txwait = txwait + int(per_vl_txwait)
-        data_dict['txwait'] = str(txwait)
+        txwait_list = re.findall(r'TxWait .* VL 0-3:(.*)', intf_body)
+        if len(txwait_list) != 0:
+            txwait_list_1 = (''.join(txwait_list)).split(',')
+            txwait = 0
+            for per_vl_txwait in txwait_list_1:
+                txwait = txwait + int(per_vl_txwait)
+        else:
+            # Sometimes combined TxWait is returned even if VLs are enabled
+            txwait = ''.join(re.findall(r'(\d+)[ ]{1,}2\.5us TxWait', \
+                                        intf_body))
+            logger.warning('Found VL but TxWait not found in VL')
 
         tx_b2b_list = (''.join(re.findall( \
                                r'Transmit B2B .* transitions .* VL 0-3:(.*)', \
@@ -1350,8 +1355,31 @@ def parse_sh_int_counters(switch_ip, cmd_body, per_switch_stats_dict):
     if sys_ver < '8.4(2)':
         # Use ? for non-greedy match
         fc_cmd_list = re.findall(r'fc.*?Percentage TxWait', cmd_body, re.DOTALL)
-        pc_cmd_list = re.findall(r'port-channel.*?Percentage TxWait', cmd_body,\
+        pc_list = re.findall(r'port-channel.*?Percentage TxWait', cmd_body,\
                                                                       re.DOTALL)
+        '''
+        The 2nd clean-up of port-channel counter detail is required to handle
+        FCIP port-channel in following format:
+            <some counters for fcip port-channel>
+            <some counters for fcip port-channel>
+        port-channel1
+            <some counters for fcip port-channel>
+            <some counters for fcip port-channel>
+        port-channel2
+        port-channel3
+            <some counters for fc port-channel>
+            <some counters for fc port-channel>
+        port-channel4
+            <some counters for fc port-channel>
+            <some counters for fc port-channel>
+
+        This ignores the FCIP port-channels
+        '''
+        pc_cmd_list = []
+        for cmd_output in pc_list:
+            pc_cmd_list.append(''.join(re.findall(r'.*(port-channel.*)', \
+                                                  cmd_output, re.DOTALL)))
+
         for fc_intf in fc_cmd_list:
             interface = ''.join(re.findall(r'(fc\d+/\d+)', fc_intf))
             intf_list = interface.split('/')
