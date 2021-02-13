@@ -1,4 +1,86 @@
 {
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDB",
+      "label": "InfluxDB",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    },
+    {
+      "name": "VAR_DB",
+      "type": "constant",
+      "label": "Database",
+      "value": "telegraf",
+      "description": ""
+    },
+    {
+      "name": "VAR_RP",
+      "type": "constant",
+      "label": "Retention Policy",
+      "value": "autogen",
+      "description": ""
+    },
+    {
+      "name": "VAR_FC_DATA_RATE",
+      "type": "constant",
+      "label": "fc_data_rate",
+      "value": "0.85",
+      "description": ""
+    },
+    {
+      "name": "VAR_MIN_INTERVAL_SUM",
+      "type": "constant",
+      "label": "min_interval_sum",
+      "value": "300",
+      "description": ""
+    }
+  ],
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "gauge",
+      "name": "Gauge",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "7.3.6"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -15,12 +97,12 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 3,
-  "iteration": 1610151826771,
+  "id": null,
+  "iteration": 1613185589024,
   "links": [],
   "panels": [
     {
-      "datasource": null,
+      "datasource": "${DS_INFLUXDB}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -732,7 +814,7 @@
     },
     {
       "collapsed": false,
-      "datasource": null,
+      "datasource": "${DS_INFLUXDB}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1001,7 +1083,7 @@
           "measurement": "Switches",
           "orderByTime": "ASC",
           "policy": "autogen",
-          "query": "SELECT mean(\"load_avg_1min\") as \"Load\" FROM \"$db\".\"$rp\".\"Switches\" WHERE (\"switch\" =~ /^$switch$/) AND $timeFilter GROUP BY time($__interval)",
+          "query": "SELECT mean(\"load_avg_1min\") as \"Load\" FROM \"$db\".\"$rp\".\"Switches\" WHERE (\"switch\" =~ /^$switch$/) AND $timeFilter GROUP BY time($__interval) fill(linear)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -1264,7 +1346,7 @@
         "y": 6
       },
       "id": 100,
-      "interval": "[[min_interval]]",
+      "interval": "[[min_interval_sum]]",
       "links": [],
       "options": {
         "showHeader": true,
@@ -2275,6 +2357,7 @@
         "alignAsTable": true,
         "avg": false,
         "current": true,
+        "hideEmpty": false,
         "max": false,
         "min": false,
         "rightSide": true,
@@ -3045,7 +3128,7 @@
     },
     {
       "collapsed": true,
-      "datasource": null,
+      "datasource": "${DS_INFLUXDB}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -3477,9 +3560,9 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "select sum(\"non_negative_difference_elapsed\") as \"Total Rx B2B Transition to 0\" from (SELECT non_negative_difference(mean(rx_b2b_credit_to_zero))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter GROUP BY time([[__interval]])",
+              "query": "select sum(\"non_negative_difference_elapsed\") as \"Total Rx B2B Transition to 0\" from (SELECT non_negative_difference(mean(rx_b2b_credit_to_zero))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter group by time([[__interval]])",
               "rawQuery": true,
-              "refId": "B",
+              "refId": "A",
               "resultFormat": "time_series",
               "select": [
                 [
@@ -3707,7 +3790,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT ((non_negative_difference(mean(rx_bytes))/elapsed(mean(oper_speed),1s))*8/(mean(oper_speed)*1000000000*[[fc_data_rate]]))*100  as \"RX % Utilization\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)",
+              "query": "select mean(non_negative_difference_elapsed_mean)  as \"RX % Utilization\" from (SELECT ((non_negative_difference(mean(rx_bytes))/elapsed(mean(oper_speed),1s))*8/(mean(oper_speed)*1000000000*[[fc_data_rate]]))*100  FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter GROUP BY switchport",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "table",
@@ -3875,7 +3958,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT ((non_negative_difference(mean(tx_bytes))/elapsed(mean(oper_speed),1s))*8/(mean(oper_speed)*1000000000*[[fc_data_rate]]))*100  as \"TX % Utilization\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)",
+              "query": "select mean(non_negative_difference_elapsed_mean)  as \"TX % Utilization\" from (SELECT ((non_negative_difference(mean(tx_bytes))/elapsed(mean(oper_speed),1s))*8/(mean(oper_speed)*1000000000*[[fc_data_rate]]))*100  FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter GROUP BY switchport",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "table",
@@ -4042,7 +4125,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "select top(\"non_negative_difference_elapsed\",switchport,10) as \"TxWait\" from (SELECT (non_negative_difference(mean(txwait))*2.5)/(elapsed(mean(oper_speed),1s)*1000000) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter",
+              "query": "select mean(\"non_negative_difference_elapsed\") as \"TxWait\" from (SELECT (non_negative_difference(mean(txwait))*2.5)/(elapsed(mean(oper_speed),1s)*1000000) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter group by switchport",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "table",
@@ -4065,7 +4148,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Top 10 Congested Ports - TxWait",
+          "title": "Port Congestion - TxWait",
           "transformations": [
             {
               "id": "filterFieldsByName",
@@ -4193,9 +4276,9 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "select top(\"non_negative_difference_elapsed\",switchport,10) as \"Tx B2B Transition to 0\" from (SELECT non_negative_difference(mean(tx_b2b_credit_to_zero))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter",
+              "query": "select mean(non_negative_difference_elapsed) as \"Tx B2B Transition to 0\" from (SELECT non_negative_difference(mean(tx_b2b_credit_to_zero))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter GROUP BY switchport",
               "rawQuery": true,
-              "refId": "A",
+              "refId": "B",
               "resultFormat": "table",
               "select": [
                 [
@@ -4216,7 +4299,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Top 10 Ports - TX B2B to 0",
+          "title": "Port Congestion - TX B2B to 0",
           "transformations": [
             {
               "id": "filterFieldsByName",
@@ -4315,7 +4398,7 @@
             "y": 9
           },
           "id": 151,
-          "interval": "[[min_interval]]",
+          "interval": "[[min_interval_sum]]",
           "options": {
             "showHeader": true,
             "sortBy": [
@@ -4342,11 +4425,12 @@
                   "type": "fill"
                 }
               ],
+              "hide": false,
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "select top(\"non_negative_difference_elapsed\",switchport,10) as \"Rx B2B Transition to 0\" from (SELECT non_negative_difference(mean(rx_b2b_credit_to_zero))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval) fill(null)) where $timeFilter",
+              "query": "select mean(non_negative_difference_elapsed) as \"Rx B2B Transition to 0\" from (SELECT non_negative_difference(mean(rx_b2b_credit_to_zero))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter GROUP BY switchport",
               "rawQuery": true,
-              "refId": "A",
+              "refId": "C",
               "resultFormat": "table",
               "select": [
                 [
@@ -4367,7 +4451,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Top 10 Ports - RX B2B to 0",
+          "title": "Port Congestion - RX B2B to 0",
           "transformations": [
             {
               "id": "filterFieldsByName",
@@ -4393,6 +4477,19 @@
                   "TX": "TX % utilization",
                   "switch": "Switch",
                   "switchport": "Port"
+                }
+              }
+            },
+            {
+              "id": "groupBy",
+              "options": {
+                "fields": {
+                  "Rx B2B Transition to 0": {
+                    "aggregations": [
+                      "mean"
+                    ],
+                    "operation": "aggregate"
+                  }
                 }
               }
             }
@@ -4495,7 +4592,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "select top(\"non_negative_difference_elapsed\",switchport,10) as \"CRC\" from (SELECT non_negative_difference(mean(tx_discard))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval) fill(null)) where $timeFilter",
+              "query": "select mean(\"non_negative_difference_elapsed\") as \"CRC\" from (SELECT non_negative_difference(mean(tx_discard))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval) fill(null)) where $timeFilter group by switchport",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "table",
@@ -4518,7 +4615,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Top 10 Ports - CRC",
+          "title": "CRC",
           "transformations": [
             {
               "id": "filterFieldsByName",
@@ -4527,6 +4624,734 @@
                   "names": [
                     "switchport",
                     "CRC"
+                  ]
+                }
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "indexByName": {
+                  "TX": 2,
+                  "switch": 0,
+                  "switchport": 1
+                },
+                "renameByName": {
+                  "TX": "TX % utilization",
+                  "switch": "Switch",
+                  "switchport": "Port"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "datasource": "$data_source",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "continuous-YlRd"
+              },
+              "custom": {
+                "align": "center",
+                "filterable": false
+              },
+              "decimals": 0,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "rgb(170, 153, 30)",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "/SFP/"
+                },
+                "properties": [
+                  {
+                    "id": "custom.displayMode",
+                    "value": "gradient-gauge"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "celsius"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Port"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 80
+                  },
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "Details of ${__value.raw} in ${__data.fields[switch]} ",
+                        "url": "d/qxGcp0bGk/mds-switchport-monitoring?orgId=1&var-switch=${__data.fields[switch]}&var-switchport=${__value.raw}\r"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Switch"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 130
+                  },
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "Details of switch ${__value.raw}",
+                        "url": "d/WoIYF-xGz/mds-switch-monitoring?orgId=1&var-switch=${__value.raw}\r"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 12,
+            "w": 6,
+            "x": 0,
+            "y": 21
+          },
+          "id": 160,
+          "interval": "[[min_interval_sum]]",
+          "options": {
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": true,
+                "displayName": "SFP Temperature"
+              }
+            ]
+          },
+          "pluginVersion": "7.3.6",
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "select top(\"last\",switchport,10) as \"SFP Temperature\" from (SELECT last(sfp_temperature) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport) where $timeFilter",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "table",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Hottest SFPs",
+          "transformations": [
+            {
+              "id": "filterFieldsByName",
+              "options": {
+                "include": {
+                  "names": [
+                    "switch",
+                    "switchport",
+                    "SFP Temperature"
+                  ]
+                }
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "indexByName": {
+                  "TX": 2,
+                  "switch": 0,
+                  "switchport": 1
+                },
+                "renameByName": {
+                  "TX": "TX % utilization",
+                  "switch": "Switch",
+                  "switchport": "Port"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "datasource": "$data_source",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "continuous-BlPu"
+              },
+              "custom": {
+                "align": "center",
+                "filterable": false
+              },
+              "decimals": 0,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "rgb(170, 153, 30)",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "/SFP/"
+                },
+                "properties": [
+                  {
+                    "id": "custom.displayMode",
+                    "value": "gradient-gauge"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "celsius"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Port"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 80
+                  },
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "Details of ${__value.raw} in ${__data.fields[switch]} ",
+                        "url": "d/qxGcp0bGk/mds-switchport-monitoring?orgId=1&var-switch=${__data.fields[switch]}&var-switchport=${__value.raw}\r"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Switch"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 130
+                  },
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "Details of switch ${__value.raw}",
+                        "url": "d/WoIYF-xGz/mds-switch-monitoring?orgId=1&var-switch=${__value.raw}\r"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 12,
+            "w": 6,
+            "x": 6,
+            "y": 21
+          },
+          "id": 162,
+          "interval": "[[min_interval_sum]]",
+          "options": {
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": false,
+                "displayName": "SFP Temperature"
+              }
+            ]
+          },
+          "pluginVersion": "7.3.6",
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "select bottom(\"last\",switchport,10) as \"SFP Temperature\" from (SELECT last(sfp_temperature) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport) where $timeFilter",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "table",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Coldest SFPs",
+          "transformations": [
+            {
+              "id": "filterFieldsByName",
+              "options": {
+                "include": {
+                  "names": [
+                    "switch",
+                    "switchport",
+                    "SFP Temperature"
+                  ]
+                }
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "indexByName": {
+                  "TX": 2,
+                  "switch": 0,
+                  "switchport": 1
+                },
+                "renameByName": {
+                  "TX": "TX % utilization",
+                  "switch": "Switch",
+                  "switchport": "Port"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "datasource": "$data_source",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "center",
+                "filterable": false
+              },
+              "decimals": 2,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "light-red",
+                    "value": null
+                  },
+                  {
+                    "color": "light-yellow",
+                    "value": -10
+                  },
+                  {
+                    "color": "semi-dark-green",
+                    "value": -5
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "/SFP/"
+                },
+                "properties": [
+                  {
+                    "id": "custom.displayMode",
+                    "value": "gradient-gauge"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "dBm"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Port"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 93
+                  },
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "Details of ${__value.raw} in ${__data.fields[switch]} ",
+                        "url": "d/qxGcp0bGk/mds-switchport-monitoring?orgId=1&var-switch=${__data.fields[switch]}&var-switchport=${__value.raw}\r"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Switch"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 130
+                  },
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "Details of switch ${__value.raw}",
+                        "url": "d/WoIYF-xGz/mds-switch-monitoring?orgId=1&var-switch=${__value.raw}\r"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 12,
+            "w": 6,
+            "x": 12,
+            "y": 21
+          },
+          "id": 164,
+          "interval": "[[min_interval_sum]]",
+          "options": {
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": false,
+                "displayName": "SFP Rx Power"
+              }
+            ]
+          },
+          "pluginVersion": "7.3.6",
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "select bottom(\"last\",switchport,10) as \"SFP Rx Power\" from (SELECT last(sfp_rx_pwr) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and oper_state != 'down' and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport) where $timeFilter",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "table",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Lowest SFP RX Power",
+          "transformations": [
+            {
+              "id": "filterFieldsByName",
+              "options": {
+                "include": {
+                  "names": [
+                    "switch",
+                    "switchport",
+                    "SFP Rx Power"
+                  ]
+                }
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "indexByName": {
+                  "TX": 2,
+                  "switch": 0,
+                  "switchport": 1
+                },
+                "renameByName": {
+                  "TX": "TX % utilization",
+                  "switch": "Switch",
+                  "switchport": "Port"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "datasource": "$data_source",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "center",
+                "filterable": false
+              },
+              "decimals": 2,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "light-red",
+                    "value": null
+                  },
+                  {
+                    "color": "light-yellow",
+                    "value": -10
+                  },
+                  {
+                    "color": "semi-dark-green",
+                    "value": -5
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "/SFP/"
+                },
+                "properties": [
+                  {
+                    "id": "custom.displayMode",
+                    "value": "gradient-gauge"
+                  },
+                  {
+                    "id": "unit",
+                    "value": "dBm"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Port"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 93
+                  },
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "Details of ${__value.raw} in ${__data.fields[switch]} ",
+                        "url": "d/qxGcp0bGk/mds-switchport-monitoring?orgId=1&var-switch=${__data.fields[switch]}&var-switchport=${__value.raw}\r"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Switch"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 130
+                  },
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "targetBlank": true,
+                        "title": "Details of switch ${__value.raw}",
+                        "url": "d/WoIYF-xGz/mds-switch-monitoring?orgId=1&var-switch=${__value.raw}\r"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 12,
+            "w": 6,
+            "x": 18,
+            "y": 21
+          },
+          "id": 166,
+          "interval": "[[min_interval_sum]]",
+          "options": {
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": false,
+                "displayName": "SFP Tx Power"
+              }
+            ]
+          },
+          "pluginVersion": "7.3.6",
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "select bottom(\"last\",switchport,10) as \"SFP Tx Power\" from (SELECT last(sfp_tx_pwr) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and oper_state != 'down' and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport) where $timeFilter",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "table",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Lowest SFP TX Power",
+          "transformations": [
+            {
+              "id": "filterFieldsByName",
+              "options": {
+                "include": {
+                  "names": [
+                    "switch",
+                    "switchport",
+                    "SFP Tx Power"
                   ]
                 }
               }
@@ -4575,7 +5400,7 @@
             "h": 2,
             "w": 4,
             "x": 0,
-            "y": 21
+            "y": 33
           },
           "id": 128,
           "interval": "[[min_interval_sum]]",
@@ -4665,7 +5490,7 @@
             "h": 2,
             "w": 4,
             "x": 4,
-            "y": 21
+            "y": 33
           },
           "id": 116,
           "interval": "[[min_interval_sum]]",
@@ -4755,7 +5580,7 @@
             "h": 2,
             "w": 4,
             "x": 8,
-            "y": 21
+            "y": 33
           },
           "id": 118,
           "interval": "[[min_interval_sum]]",
@@ -4845,7 +5670,7 @@
             "h": 2,
             "w": 4,
             "x": 12,
-            "y": 21
+            "y": 33
           },
           "id": 122,
           "interval": "[[min_interval_sum]]",
@@ -4935,7 +5760,7 @@
             "h": 2,
             "w": 4,
             "x": 16,
-            "y": 21
+            "y": 33
           },
           "id": 124,
           "interval": "[[min_interval_sum]]",
@@ -5025,7 +5850,7 @@
             "h": 2,
             "w": 4,
             "x": 20,
-            "y": 21
+            "y": 33
           },
           "id": 126,
           "interval": "[[min_interval_sum]]",
@@ -5154,7 +5979,7 @@
             "h": 12,
             "w": 4,
             "x": 0,
-            "y": 23
+            "y": 35
           },
           "id": 129,
           "interval": "[[min_interval_sum]]",
@@ -5186,7 +6011,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "select top(\"non_negative_difference_elapsed\",switchport,10) as \"Timeout Discards\" from (SELECT non_negative_difference(mean(timeout_discards))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter",
+              "query": "select mean(\"non_negative_difference_elapsed\") as \"Timeout Discards\" from (SELECT non_negative_difference(mean(timeout_discards))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter GROUP BY switchport",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "table",
@@ -5209,7 +6034,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Top 10 Ports - Timeout Discard",
+          "title": "Timeout Discard",
           "transformations": [
             {
               "id": "filterFieldsByName",
@@ -5305,7 +6130,7 @@
             "h": 12,
             "w": 4,
             "x": 4,
-            "y": 23
+            "y": 35
           },
           "id": 117,
           "interval": "[[min_interval_sum]]",
@@ -5337,7 +6162,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "select top(\"non_negative_difference_elapsed\",switchport,10) as \"Rx Discard\" from (SELECT non_negative_difference(mean(rx_discard))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter",
+              "query": "select mean(\"non_negative_difference_elapsed\") as \"Rx Discard\" from (SELECT non_negative_difference(mean(rx_discard))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter GROUP BY switchport",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "table",
@@ -5360,7 +6185,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Top 10 Ports - RX Discard",
+          "title": "RX Discard",
           "transformations": [
             {
               "id": "filterFieldsByName",
@@ -5456,7 +6281,7 @@
             "h": 12,
             "w": 4,
             "x": 8,
-            "y": 23
+            "y": 35
           },
           "id": 119,
           "interval": "[[min_interval_sum]]",
@@ -5488,7 +6313,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "select top(\"non_negative_difference_elapsed\",switchport,10) as \"TX Discard\" from (SELECT non_negative_difference(mean(tx_discard))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter",
+              "query": "select mean(\"non_negative_difference_elapsed\") as \"TX Discard\" from (SELECT non_negative_difference(mean(tx_discard))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter GROUP BY switchport",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "table",
@@ -5511,7 +6336,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Top 10 Ports - TX Discard",
+          "title": "TX Discard",
           "transformations": [
             {
               "id": "filterFieldsByName",
@@ -5607,7 +6432,7 @@
             "h": 12,
             "w": 4,
             "x": 12,
-            "y": 23
+            "y": 35
           },
           "id": 123,
           "interval": "[[min_interval_sum]]",
@@ -5639,7 +6464,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "select top(\"non_negative_difference_elapsed\",switchport,10) as \"FEC Corrected\" from (SELECT non_negative_difference(mean(fec_corrected))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter ",
+              "query": "select mean(\"non_negative_difference_elapsed\") as \"FEC Corrected\" from (SELECT non_negative_difference(mean(fec_corrected))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter GROUP BY switchport ",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "table",
@@ -5662,7 +6487,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Top 10 Ports - FEC Corrected",
+          "title": "FEC Corrected",
           "transformations": [
             {
               "id": "filterFieldsByName",
@@ -5758,7 +6583,7 @@
             "h": 12,
             "w": 4,
             "x": 16,
-            "y": 23
+            "y": 35
           },
           "id": 125,
           "interval": "[[min_interval_sum]]",
@@ -5790,7 +6615,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "select top(\"non_negative_difference_elapsed\",switchport,10) as \"FEC Uncorrected\" from (SELECT non_negative_difference(mean(fec_uncorrected))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter",
+              "query": "select mean(\"non_negative_difference_elapsed\") as \"FEC Uncorrected\" from (SELECT non_negative_difference(mean(fec_uncorrected))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter GROUP BY switchport",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "table",
@@ -5813,7 +6638,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Top 10 Ports - FEC Uncorrected",
+          "title": "FEC Uncorrected",
           "transformations": [
             {
               "id": "filterFieldsByName",
@@ -5909,7 +6734,7 @@
             "h": 12,
             "w": 4,
             "x": 20,
-            "y": 23
+            "y": 35
           },
           "id": 127,
           "interval": "[[min_interval_sum]]",
@@ -5941,7 +6766,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "select top(\"non_negative_difference_elapsed\",switchport,10) as \"Invalid Transmission Words\" from (SELECT non_negative_difference(mean(itw))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter ",
+              "query": "select mean(\"non_negative_difference_elapsed\") as \"Invalid Transmission Words\" from (SELECT non_negative_difference(mean(itw))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter GROUP BY switchport ",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "table",
@@ -5964,7 +6789,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Top 10 Ports - ITW",
+          "title": " ITW",
           "transformations": [
             {
               "id": "filterFieldsByName",
@@ -6021,7 +6846,7 @@
             "h": 2,
             "w": 4,
             "x": 0,
-            "y": 35
+            "y": 47
           },
           "id": 130,
           "interval": "[[min_interval_sum]]",
@@ -6111,7 +6936,7 @@
             "h": 2,
             "w": 4,
             "x": 4,
-            "y": 35
+            "y": 47
           },
           "id": 132,
           "interval": "[[min_interval_sum]]",
@@ -6201,7 +7026,7 @@
             "h": 2,
             "w": 4,
             "x": 8,
-            "y": 35
+            "y": 47
           },
           "id": 134,
           "interval": "[[min_interval_sum]]",
@@ -6291,7 +7116,7 @@
             "h": 2,
             "w": 3,
             "x": 12,
-            "y": 35
+            "y": 47
           },
           "id": 136,
           "interval": "[[min_interval_sum]]",
@@ -6381,7 +7206,7 @@
             "h": 2,
             "w": 3,
             "x": 15,
-            "y": 35
+            "y": 47
           },
           "id": 138,
           "interval": "[[min_interval_sum]]",
@@ -6471,7 +7296,7 @@
             "h": 2,
             "w": 3,
             "x": 18,
-            "y": 35
+            "y": 47
           },
           "id": 140,
           "interval": "[[min_interval_sum]]",
@@ -6561,7 +7386,7 @@
             "h": 2,
             "w": 3,
             "x": 21,
-            "y": 35
+            "y": 47
           },
           "id": 142,
           "interval": "[[min_interval_sum]]",
@@ -6702,7 +7527,7 @@
             "h": 12,
             "w": 4,
             "x": 0,
-            "y": 37
+            "y": 49
           },
           "id": 131,
           "interval": "[[min_interval_sum]]",
@@ -6734,7 +7559,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "select top(\"non_negative_difference_elapsed\",switchport,10) as \"Link Failure\" from (SELECT non_negative_difference(mean(link_failures))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter",
+              "query": "select mean(\"non_negative_difference_elapsed\") as \"Link Failure\" from (SELECT non_negative_difference(mean(link_failures))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter GROUP BY switchport",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "table",
@@ -6757,7 +7582,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Top 10 Ports - Link Failure",
+          "title": " Link Failure",
           "transformations": [
             {
               "id": "filterFieldsByName",
@@ -6865,7 +7690,7 @@
             "h": 12,
             "w": 4,
             "x": 4,
-            "y": 37
+            "y": 49
           },
           "id": 133,
           "interval": "[[min_interval_sum]]",
@@ -6897,7 +7722,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "select top(\"non_negative_difference_elapsed\",switchport,10) as \"Signal Loss\" from (SELECT non_negative_difference(mean(signal_loss))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter",
+              "query": "select mean(\"non_negative_difference_elapsed\") as \"Signal Loss\" from (SELECT non_negative_difference(mean(signal_loss))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter GROUP BY switchport",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "table",
@@ -6920,7 +7745,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Top 10 Ports - Signal Loss",
+          "title": "Signal Loss",
           "transformations": [
             {
               "id": "filterFieldsByName",
@@ -7028,7 +7853,7 @@
             "h": 12,
             "w": 4,
             "x": 8,
-            "y": 37
+            "y": 49
           },
           "id": 135,
           "interval": "[[min_interval_sum]]",
@@ -7060,7 +7885,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "select top(\"non_negative_difference_elapsed\",switchport,10) as \"Sync Loss\" from (SELECT non_negative_difference(mean(sync_loss))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter",
+              "query": "select mean(\"non_negative_difference_elapsed\") as \"Sync Loss\" from (SELECT non_negative_difference(mean(sync_loss))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter GROUP BY switchport",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "table",
@@ -7083,7 +7908,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Top 10 Ports - Sync Loss",
+          "title": "Sync Loss",
           "transformations": [
             {
               "id": "filterFieldsByName",
@@ -7191,7 +8016,7 @@
             "h": 12,
             "w": 3,
             "x": 12,
-            "y": 37
+            "y": 49
           },
           "id": 137,
           "interval": "[[min_interval_sum]]",
@@ -7223,7 +8048,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "select top(\"non_negative_difference_elapsed\",switchport,10) as \"RX LR\" from (SELECT non_negative_difference(mean(rx_lr))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter",
+              "query": "select mean(\"non_negative_difference_elapsed\") as \"RX LR\" from (SELECT non_negative_difference(mean(rx_lr))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter GROUP BY switchport",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "table",
@@ -7246,7 +8071,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Top 10 Ports - RX Link Reset",
+          "title": "RX Link Reset",
           "transformations": [
             {
               "id": "filterFieldsByName",
@@ -7354,7 +8179,7 @@
             "h": 12,
             "w": 3,
             "x": 15,
-            "y": 37
+            "y": 49
           },
           "id": 139,
           "interval": "[[min_interval_sum]]",
@@ -7386,7 +8211,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "select top(\"non_negative_difference_elapsed\",switchport,10) as \"TX LR\" from (SELECT non_negative_difference(mean(tx_lr))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter",
+              "query": "select mean(\"non_negative_difference_elapsed\") as \"TX LR\" from (SELECT non_negative_difference(mean(tx_lr))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter GROUP BY switchport",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "table",
@@ -7409,7 +8234,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Top 10 Ports - TX Link Reset",
+          "title": "TX Link Reset",
           "transformations": [
             {
               "id": "filterFieldsByName",
@@ -7517,7 +8342,7 @@
             "h": 12,
             "w": 3,
             "x": 18,
-            "y": 37
+            "y": 49
           },
           "id": 141,
           "interval": "[[min_interval_sum]]",
@@ -7549,7 +8374,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "select top(\"non_negative_difference_elapsed\",switchport,10) as \"RX LRR\" from (SELECT non_negative_difference(mean(rx_lrr))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter",
+              "query": "select mean(\"non_negative_difference_elapsed\") as \"RX LRR\" from (SELECT non_negative_difference(mean(rx_lrr))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter GROUP BY switchport",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "table",
@@ -7572,7 +8397,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Top 10 Ports - RX Link Reset Response",
+          "title": "RX Link Reset Response",
           "transformations": [
             {
               "id": "filterFieldsByName",
@@ -7668,7 +8493,7 @@
             "h": 12,
             "w": 3,
             "x": 21,
-            "y": 37
+            "y": 49
           },
           "id": 143,
           "interval": "[[min_interval_sum]]",
@@ -7700,7 +8525,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "select top(\"non_negative_difference_elapsed\",switchport,10) as \"TX LRR\" from (SELECT non_negative_difference(mean(tx_lrr))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter",
+              "query": "select mean(\"non_negative_difference_elapsed\") as \"TX LRR\" from (SELECT non_negative_difference(mean(tx_lrr))/elapsed(mean(oper_speed),1s) FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE \"pc\" != '' and \"oper_state\" != 'down'  and \"switch\" =~ /^$switch$/ AND $timeFilter GROUP BY switchport,time($__interval)) where $timeFilter GROUP BY switchport",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "table",
@@ -7723,7 +8548,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Top 10 Ports - TX Link Reset Response",
+          "title": "TX Link Reset Response",
           "transformations": [
             {
               "id": "filterFieldsByName",
@@ -7768,9 +8593,9 @@
     "list": [
       {
         "current": {
-          "selected": false,
-          "text": "telegraf",
-          "value": "telegraf"
+          "value": "${VAR_DB}",
+          "text": "${VAR_DB}",
+          "selected": false
         },
         "error": null,
         "hide": 2,
@@ -7778,20 +8603,20 @@
         "name": "db",
         "options": [
           {
-            "selected": true,
-            "text": "telegraf",
-            "value": "telegraf"
+            "value": "${VAR_DB}",
+            "text": "${VAR_DB}",
+            "selected": false
           }
         ],
-        "query": "telegraf",
+        "query": "${VAR_DB}",
         "skipUrlSync": false,
         "type": "constant"
       },
       {
         "current": {
-          "selected": false,
-          "text": "autogen",
-          "value": "autogen"
+          "value": "${VAR_RP}",
+          "text": "${VAR_RP}",
+          "selected": false
         },
         "error": null,
         "hide": 2,
@@ -7799,12 +8624,12 @@
         "name": "rp",
         "options": [
           {
-            "selected": true,
-            "text": "autogen",
-            "value": "autogen"
+            "value": "${VAR_RP}",
+            "text": "${VAR_RP}",
+            "selected": false
           }
         ],
-        "query": "autogen",
+        "query": "${VAR_RP}",
         "skipUrlSync": false,
         "type": "constant"
       },
@@ -7829,9 +8654,9 @@
       },
       {
         "current": {
-          "selected": false,
-          "text": "0.85",
-          "value": "0.85"
+          "value": "${VAR_FC_DATA_RATE}",
+          "text": "${VAR_FC_DATA_RATE}",
+          "selected": false
         },
         "error": null,
         "hide": 2,
@@ -7839,22 +8664,18 @@
         "name": "fc_data_rate",
         "options": [
           {
-            "selected": true,
-            "text": "0.85",
-            "value": "0.85"
+            "value": "${VAR_FC_DATA_RATE}",
+            "text": "${VAR_FC_DATA_RATE}",
+            "selected": false
           }
         ],
-        "query": "0.85",
+        "query": "${VAR_FC_DATA_RATE}",
         "skipUrlSync": false,
         "type": "constant"
       },
       {
         "allValue": null,
-        "current": {
-          "selected": false,
-          "text": "",
-          "value": ""
-        },
+        "current": {},
         "datasource": "$data_source",
         "definition": "",
         "error": null,
@@ -7877,30 +8698,9 @@
       },
       {
         "current": {
-          "selected": false,
-          "text": "10",
-          "value": "10"
-        },
-        "error": null,
-        "hide": 2,
-        "label": null,
-        "name": "min_interval",
-        "options": [
-          {
-            "selected": true,
-            "text": "10",
-            "value": "10"
-          }
-        ],
-        "query": "10",
-        "skipUrlSync": false,
-        "type": "constant"
-      },
-      {
-        "current": {
-          "selected": false,
-          "text": "300",
-          "value": "300"
+          "value": "${VAR_MIN_INTERVAL_SUM}",
+          "text": "${VAR_MIN_INTERVAL_SUM}",
+          "selected": false
         },
         "error": null,
         "hide": 2,
@@ -7908,14 +8708,37 @@
         "name": "min_interval_sum",
         "options": [
           {
-            "selected": true,
-            "text": "300",
-            "value": "300"
+            "value": "${VAR_MIN_INTERVAL_SUM}",
+            "text": "${VAR_MIN_INTERVAL_SUM}",
+            "selected": false
           }
         ],
-        "query": "300",
+        "query": "${VAR_MIN_INTERVAL_SUM}",
         "skipUrlSync": false,
         "type": "constant"
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "$data_source",
+        "definition": "",
+        "error": null,
+        "hide": 2,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "min_interval",
+        "options": [],
+        "query": "select last(elapsed) from (select elapsed(switchname,1s) from \"$db\".\"$rp\".\"Switches\" where switch =~ /$switch/)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
       }
     ]
   },
@@ -7927,5 +8750,5 @@
   "timezone": "",
   "title": "MTM - MDS Switch Monitoring",
   "uid": "WoIYF-xGz",
-  "version": 92
+  "version": 104
 }
