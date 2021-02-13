@@ -1,4 +1,67 @@
 {
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDB",
+      "label": "InfluxDB",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    },
+    {
+      "name": "VAR_DB",
+      "type": "constant",
+      "label": "Database",
+      "value": "telegraf",
+      "description": ""
+    },
+    {
+      "name": "VAR_RP",
+      "type": "constant",
+      "label": "Retention Policy",
+      "value": "autogen",
+      "description": ""
+    },
+    {
+      "name": "VAR_FC_DATA_RATE",
+      "type": "constant",
+      "label": "fc_data_rate",
+      "value": "0.85",
+      "description": ""
+    }
+  ],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "7.3.6"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -15,12 +78,12 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
-  "iteration": 1610151871848,
+  "id": null,
+  "iteration": 1613186002278,
   "links": [],
   "panels": [
     {
-      "datasource": null,
+      "datasource": "${DS_INFLUXDB}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -330,7 +393,7 @@
     },
     {
       "collapsed": false,
-      "datasource": null,
+      "datasource": "${DS_INFLUXDB}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -750,6 +813,7 @@
       "dashes": false,
       "datasource": "$data_source",
       "decimals": 0,
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -1379,7 +1443,7 @@
     },
     {
       "collapsed": true,
-      "datasource": null,
+      "datasource": "${DS_INFLUXDB}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1714,7 +1778,7 @@
     },
     {
       "collapsed": true,
-      "datasource": null,
+      "datasource": "${DS_INFLUXDB}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -2401,7 +2465,7 @@
     },
     {
       "collapsed": true,
-      "datasource": null,
+      "datasource": "${DS_INFLUXDB}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -2722,7 +2786,7 @@
               "measurement": "SwitchPortStats",
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT (non_negative_difference(mean(tx_bytes))/elapsed(mean(oper_speed),1s))*8 as \"RX Traffic\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"switch\" =~ /^$switch$/ AND \"switchport\" =~ /^$switchport$/) AND $timeFilter GROUP BY time($__interval),switchport fill(null)",
+              "query": "SELECT (non_negative_difference(mean(tx_bytes))/elapsed(mean(oper_speed),1s))*8 as \"TX Traffic\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"switch\" =~ /^$switch$/ AND \"switchport\" =~ /^$switchport$/) AND $timeFilter GROUP BY time($__interval),switchport fill(null)",
               "rawQuery": true,
               "refId": "C",
               "resultFormat": "time_series",
@@ -2780,7 +2844,7 @@
               "measurement": "SwitchPortStats",
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT (non_negative_difference(mean(tx_bytes))/elapsed(mean(oper_speed),1s))*8 as \"RX Traffic\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"switch\" =~ /^$switch$/ AND \"pc\" =~ /^$switchport$/) AND $timeFilter GROUP BY time([[__interval]]*20),switch,switchport fill(null)",
+              "query": "SELECT (non_negative_difference(mean(tx_bytes))/elapsed(mean(oper_speed),1s))*8 as \"TX Traffic\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"switch\" =~ /^$switch$/ AND \"pc\" =~ /^$switchport$/) AND $timeFilter GROUP BY time([[__interval]]*20),switch,switchport fill(null)",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
@@ -2877,9 +2941,9 @@
     "list": [
       {
         "current": {
-          "selected": false,
-          "text": "telegraf",
-          "value": "telegraf"
+          "value": "${VAR_DB}",
+          "text": "${VAR_DB}",
+          "selected": false
         },
         "error": null,
         "hide": 2,
@@ -2887,20 +2951,20 @@
         "name": "db",
         "options": [
           {
-            "selected": true,
-            "text": "telegraf",
-            "value": "telegraf"
+            "value": "${VAR_DB}",
+            "text": "${VAR_DB}",
+            "selected": false
           }
         ],
-        "query": "telegraf",
+        "query": "${VAR_DB}",
         "skipUrlSync": false,
         "type": "constant"
       },
       {
         "current": {
-          "selected": false,
-          "text": "autogen",
-          "value": "autogen"
+          "value": "${VAR_RP}",
+          "text": "${VAR_RP}",
+          "selected": false
         },
         "error": null,
         "hide": 2,
@@ -2908,12 +2972,12 @@
         "name": "rp",
         "options": [
           {
-            "selected": true,
-            "text": "autogen",
-            "value": "autogen"
+            "value": "${VAR_RP}",
+            "text": "${VAR_RP}",
+            "selected": false
           }
         ],
-        "query": "autogen",
+        "query": "${VAR_RP}",
         "skipUrlSync": false,
         "type": "constant"
       },
@@ -2938,9 +3002,9 @@
       },
       {
         "current": {
-          "selected": false,
-          "text": "0.85",
-          "value": "0.85"
+          "value": "${VAR_FC_DATA_RATE}",
+          "text": "${VAR_FC_DATA_RATE}",
+          "selected": false
         },
         "error": null,
         "hide": 2,
@@ -2948,22 +3012,18 @@
         "name": "fc_data_rate",
         "options": [
           {
-            "selected": true,
-            "text": "0.85",
-            "value": "0.85"
+            "value": "${VAR_FC_DATA_RATE}",
+            "text": "${VAR_FC_DATA_RATE}",
+            "selected": false
           }
         ],
-        "query": "0.85",
+        "query": "${VAR_FC_DATA_RATE}",
         "skipUrlSync": false,
         "type": "constant"
       },
       {
         "allValue": null,
-        "current": {
-          "selected": false,
-          "text": "",
-          "value": ""
-        },
+        "current": {},
         "datasource": "$data_source",
         "definition": "",
         "error": null,
@@ -2986,15 +3046,7 @@
       },
       {
         "allValue": null,
-        "current": {
-          "selected": false,
-          "text": [
-            ""
-          ],
-          "value": [
-            ""
-          ]
-        },
+        "current": {},
         "datasource": "$data_source",
         "definition": "",
         "error": null,
@@ -3017,11 +3069,7 @@
       },
       {
         "allValue": null,
-        "current": {
-          "selected": false,
-          "text": "30",
-          "value": "30"
-        },
+        "current": {},
         "datasource": "$data_source",
         "definition": "",
         "error": null,
@@ -3052,5 +3100,5 @@
   "timezone": "",
   "title": "MTM - MDS Switchports",
   "uid": "qxGcp0bGk",
-  "version": 48
+  "version": 50
 }
