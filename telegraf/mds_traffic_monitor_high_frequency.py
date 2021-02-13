@@ -3,7 +3,7 @@
 desired output format"""
 
 __author__ = "Paresh Gupta"
-__version__ = "0.10"
+__version__ = "0.11"
 
 import sys
 import os
@@ -1068,6 +1068,7 @@ def fill_data_from_sh_int_count_det_842(per_port_dict, intf_body):
     # 3818671652 frames, 6845929020368 bytes received
     # not
     # 3818409523 class-3 frames, 6845909666604 bytes received
+    '''
     rx_bytes = ''.join(re.findall(r'Rx total bytes:[ ]{1,}(\d+)', intf_body))
     if rx_bytes != '':
         data_dict['rx_bytes'] = rx_bytes
@@ -1075,6 +1076,7 @@ def fill_data_from_sh_int_count_det_842(per_port_dict, intf_body):
     tx_bytes = ''.join(re.findall(r'Tx total bytes:[ ]{1,}(\d+)', intf_body))
     if tx_bytes != '':
         data_dict['tx_bytes'] = tx_bytes
+    '''
 
     credit_loss = ''.join(re.findall(r'Credit loss:[ ]{1,}(\d+)', intf_body))
     if credit_loss != '':
@@ -1200,6 +1202,9 @@ def fill_data_from_sh_int_count_det(per_port_dict, intf_body):
     # 3818671652 frames, 6845929020368 bytes received
     # not
     # 3818409523 class-3 frames, 6845909666604 bytes received
+    '''
+    Get as much data as possible from show interface because the chance of not
+    working is higher with counter detail command
     rx_bytes = ''.join(re.findall(r'(\d+) bytes received', \
                ''.join(re.findall( \
                 r'(?<!class-)\d+ frames, \d+ bytes received', intf_body))))
@@ -1211,6 +1216,7 @@ def fill_data_from_sh_int_count_det(per_port_dict, intf_body):
                 r'(?<!class-)\d+ frames, \d+ bytes transmitted', intf_body))))
     if tx_bytes != '':
         data_dict['tx_bytes'] = tx_bytes
+    '''
 
     credit_loss = ''.join(re.findall(r'(\d+)[ ]{1,}credit loss', intf_body))
     if credit_loss != '':
@@ -1849,6 +1855,15 @@ def fill_data_from_sh_int(per_port_dict, intf_body, interface):
             meta_dict['pc'] = 'No'
     else:
         meta_dict['pc'] = bundle_if_index
+
+
+    rx_bytes = ''.join(re.findall(r'frames input,(\d+) bytes', intf_body))
+    if rx_bytes != '':
+        data_dict['rx_bytes'] = rx_bytes
+
+    tx_bytes = ''.join(re.findall(r'frames output,(\d+) bytes', intf_body))
+    if tx_bytes != '':
+        data_dict['tx_bytes'] = tx_bytes
 
     if 'VL' in intf_body:
         # Add the values of all the VLs
