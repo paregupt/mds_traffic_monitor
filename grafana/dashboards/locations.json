@@ -99,7 +99,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1613185930734,
+  "iteration": 1617471124211,
   "links": [],
   "panels": [
     {
@@ -1947,7 +1947,7 @@
           ],
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT switchname as \"Switch Name\", sys_ver as \"NX-OS Version\", sys_uptime as \"Systerm Uptime\", kernel_uptime as \"Kernel Uptime\", chassis_id as \"Switch Type\", cpu_kernel as \"CPU Util - Kernel\", cpu_user as \"CPU Util - User\", (\"mem_used\")/(\"mem_total\")*100 as \"Memory Util\", response_time as \"NXAPI Response Time\" FROM \"$db\".\"$rp\".\"Switches\" WHERE (\"location\" =~ /^$location$/) AND  $timeFilter GROUP BY switch,location order by time desc limit 1",
+          "query": "SELECT switchname as \"Switch Name\", sys_ver as \"NX-OS Version\", sys_uptime as \"Systerm Uptime\", kernel_uptime as \"Kernel Uptime\", active_sup_uptime as \"Active Sup Uptime\",chassis_id as \"Switch Type\", cpu_kernel as \"CPU Util - Kernel\", cpu_user as \"CPU Util - User\", (\"mem_used\")/(\"mem_total\")*100 as \"Memory Util\", response_time as \"NXAPI Response Time\" FROM \"$db\".\"$rp\".\"Switches\" WHERE (\"location\" =~ /^$location$/) AND  $timeFilter GROUP BY switch,location order by time desc limit 1",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "table",
@@ -1984,12 +1984,13 @@
               "switch": false
             },
             "indexByName": {
-              "CPU Util - Kernel": 8,
-              "CPU Util - User": 9,
+              "Active Sup Uptime": 8,
+              "CPU Util - Kernel": 9,
+              "CPU Util - User": 10,
               "Kernel Uptime": 7,
-              "Memory Util": 10,
+              "Memory Util": 11,
               "NX-OS Version": 5,
-              "NXAPI Response Time": 11,
+              "NXAPI Response Time": 12,
               "Switch Name": 2,
               "Switch Type": 4,
               "Systerm Uptime": 6,
@@ -8070,5 +8071,5 @@
   "timezone": "",
   "title": "MTM - Locations",
   "uid": "i56djUbMz",
-  "version": 66
+  "version": 67
 }
