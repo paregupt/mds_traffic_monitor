@@ -98,7 +98,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1613185589024,
+  "iteration": 1617471235494,
   "links": [],
   "panels": [
     {
@@ -1340,7 +1340,7 @@
         ]
       },
       "gridPos": {
-        "h": 15,
+        "h": 16,
         "w": 14,
         "x": 10,
         "y": 6
@@ -1456,7 +1456,7 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 7,
+        "h": 6,
         "w": 5,
         "x": 0,
         "y": 10
@@ -1662,7 +1662,7 @@
       "fill": 10,
       "fillGradient": 10,
       "gridPos": {
-        "h": 7,
+        "h": 6,
         "w": 5,
         "x": 5,
         "y": 10
@@ -1830,7 +1830,7 @@
         "h": 2,
         "w": 6,
         "x": 0,
-        "y": 17
+        "y": 16
       },
       "id": 144,
       "interval": "",
@@ -1935,10 +1935,10 @@
       "fill": 10,
       "fillGradient": 10,
       "gridPos": {
-        "h": 4,
+        "h": 6,
         "w": 4,
         "x": 6,
-        "y": 17
+        "y": 16
       },
       "hiddenSeries": false,
       "id": 147,
@@ -2085,7 +2085,7 @@
         "h": 2,
         "w": 6,
         "x": 0,
-        "y": 19
+        "y": 18
       },
       "id": 80,
       "interval": "",
@@ -2153,6 +2153,102 @@
       "type": "stat"
     },
     {
+      "cacheTimeout": null,
+      "datasource": "$data_source",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {},
+          "decimals": 5,
+          "mappings": [],
+          "nullValueMode": "connected",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "light-blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "dtdurations"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 6,
+        "x": 0,
+        "y": 20
+      },
+      "id": 167,
+      "interval": "",
+      "links": [],
+      "maxDataPoints": 2,
+      "options": {
+        "colorMode": "value",
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ]
+        },
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "7.3.6",
+      "targets": [
+        {
+          "alias": "$col",
+          "groupBy": [],
+          "measurement": "FIEnvStats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"active_sup_uptime\") AS \"Active Sup Uptime\" FROM \"$db\".\"$rp\".\"Switches\" WHERE (\"switch\" =~ /^$switch$/) AND $timeFilter",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "sys_uptime"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  "Uptime"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "domain",
+              "operator": "=~",
+              "value": "/^$domain$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Active Sup Uptime",
+      "type": "stat"
+    },
+    {
       "aliasColors": {},
       "bars": true,
       "dashLength": 10,
@@ -2171,7 +2267,7 @@
         "h": 6,
         "w": 6,
         "x": 0,
-        "y": 21
+        "y": 22
       },
       "hiddenSeries": false,
       "id": 94,
@@ -2348,7 +2444,7 @@
         "h": 6,
         "w": 6,
         "x": 6,
-        "y": 21
+        "y": 22
       },
       "hiddenSeries": false,
       "id": 155,
@@ -2605,7 +2701,7 @@
         "h": 6,
         "w": 6,
         "x": 12,
-        "y": 21
+        "y": 22
       },
       "hiddenSeries": false,
       "id": 93,
@@ -2934,7 +3030,7 @@
         "h": 6,
         "w": 6,
         "x": 18,
-        "y": 21
+        "y": 22
       },
       "hiddenSeries": false,
       "id": 97,
@@ -3133,7 +3229,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 27
+        "y": 28
       },
       "id": 154,
       "panels": [
@@ -8750,5 +8846,5 @@
   "timezone": "",
   "title": "MTM - MDS Switch Monitoring",
   "uid": "WoIYF-xGz",
-  "version": 104
+  "version": 106
 }
