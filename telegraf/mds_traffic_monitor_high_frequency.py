@@ -3,7 +3,7 @@
 desired output format"""
 
 __author__ = "Paresh Gupta"
-__version__ = "0.11"
+__version__ = "0.12"
 
 import sys
 import os
@@ -257,6 +257,10 @@ def print_output_in_influxdb_lp(switch_ip, per_switch_stats_dict):
     if 'kernel_uptime' in per_switch_stats_dict:
         switch_fields = switch_fields + ',kernel_uptime=' + \
                         str(per_switch_stats_dict['kernel_uptime'])
+
+    if 'active_sup_uptime' in per_switch_stats_dict:
+        switch_fields = switch_fields + ',active_sup_uptime=' + \
+                        str(per_switch_stats_dict['active_sup_uptime'])
 
     switch_fields = switch_fields + '\n'
     final_print_string = final_print_string + switch_prefix + \
@@ -530,7 +534,24 @@ def parse_sh_sys_uptime(switch_ip, cmd_body, per_switch_stats_dict):
                                             SECONDS_IN_MINUTE
 
             per_switch_stats_dict['kernel_uptime'] = ker_uptime_secs
+        if line.startswith('Active supervisor uptime'):
+            active_sup_uptime_list = line.split(',')
+            if len(active_sup_uptime_list) < 4:
+                logger.error('Unable to parse: %s', line)
+                continue
+            sup_up_days = int(get_float_from_string(active_sup_uptime_list[0]))
+            sup_up_hrs = int(get_float_from_string(active_sup_uptime_list[1]))
+            sup_up_mins = int(get_float_from_string(active_sup_uptime_list[2]))
+            sup_up_secs = int(get_float_from_string(active_sup_uptime_list[3]))
 
+            sup_uptime_secs = sup_up_secs + \
+                              sup_up_mins * SECONDS_IN_MINUTE + \
+                              sup_up_hrs * MINUTES_IN_HOUR * \
+                                           SECONDS_IN_MINUTE + \
+                              sup_up_days * HOURS_IN_DAY * \
+                                            MINUTES_IN_HOUR * \
+                                            SECONDS_IN_MINUTE
+            per_switch_stats_dict['active_sup_uptime'] = sup_uptime_secs
 
     logger.info('Done: parse_sh_sys_uptime for %s', switch_ip)
 
