@@ -1878,9 +1878,17 @@ def fill_data_from_sh_int(per_port_dict, intf_body, interface):
         meta_dict['pc'] = bundle_if_index
 
 
+    rx_frames = ''.join(re.findall(r'(\d+) frames input', intf_body))
+    if rx_frames != '':
+        data_dict['rx_frames'] = rx_frames
+
     rx_bytes = ''.join(re.findall(r'frames input,(\d+) bytes', intf_body))
     if rx_bytes != '':
         data_dict['rx_bytes'] = rx_bytes
+
+    tx_frames = ''.join(re.findall(r'(\d+) frames output', intf_body))
+    if tx_frames != '':
+        data_dict['tx_frames'] = tx_frames
 
     tx_bytes = ''.join(re.findall(r'frames output,(\d+) bytes', intf_body))
     if tx_bytes != '':
