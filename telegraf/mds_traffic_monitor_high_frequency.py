@@ -3,7 +3,8 @@
 desired output format"""
 
 __author__ = "Paresh Gupta"
-__version__ = "0.12"
+__version__ = "0.20"
+__updated__ = "22-Aug-2025-6-PM-PDT"
 
 import sys
 import os
@@ -288,7 +289,8 @@ def print_output_in_influxdb_lp(switch_ip, per_switch_stats_dict):
 
         for key, val in sorted((per_port_dict['data']).items()):
             sep = ' ' if port_fields == '' else ','
-            if key in ('description', 'pwwn', 'port_down_reason'):
+            if key in ('description', 'pwwn', 'port_down_reason', \
+                       'last_changed'):
                 port_fields = port_fields + sep + key + '="' + str(val) + '"'
             else:
                 port_fields = port_fields + sep + key + '=' + str(val)
@@ -601,7 +603,7 @@ def parse_sh_mod_json(switch_ip, cmd_body, per_switch_stats_dict):
 
         if '1536K9' in item['model'] or '768K9' in item['model'] or \
             '9132' in item['model'] or '9148T' in item['model'] or \
-            '9396T' in item['model']:
+            '9396T' in item['model'] or '3072K9' in item['model']:
             module_dict[mod_num] = {}
             module_dict[mod_num]['model'] = item['model']
             module_dict[mod_num]['status'] = item['status']
@@ -694,8 +696,12 @@ def parse_sh_mod(switch_ip, cmd_body, per_switch_stats_dict):
 
             if '1536K9' in model or '768K9' in model or '9132' in model or \
                 '9148T' in model or '9396T' in model or '9148S' in model or \
-                '9396S' in model or '9250' in model:
+                '9396S' in model or '3072K9' in model:
                 intf_str = 'fc' + str(slot) + '/' + '1 - ' + str(num_port)
+                intf_str_list.append(intf_str)
+
+            if '9250' in model:
+                intf_str = 'fc1/1 - 40'
                 intf_str_list.append(intf_str)
 
             if 'X9334-K9' in model:
@@ -1863,6 +1869,14 @@ def fill_data_from_sh_int(per_port_dict, intf_body, interface):
     if oper_speed != '':
         data_dict['oper_speed'] = oper_speed
 
+    vsan = ''.join(re.findall(r'Port vsan is (\d+)', intf_body))
+    if vsan != '':
+        data_dict['vsan'] = vsan
+
+    last_changed = ''.join(re.findall(r'last changed at (.*)', intf_body))
+    if last_changed != '':
+        data_dict['last_changed'] = last_changed
+
     # word boundaries (\b) filled with 1 or more non-space
     pwwn = ''.join(re.findall(r'Port WWN is (\b\S+\b)', intf_body))
     if pwwn != '':
@@ -2463,7 +2477,8 @@ def main(argv):
     parse_cmdline_arguments()
     setup_logging()
 
-    logger.warning('---------- START (version %s)----------', __version__)
+    logger.warning('---------- START (version %s) (last update %s)----------', \
+                     __version__, __updated__)
 
     # Read input file to get the switches
     get_switches()
