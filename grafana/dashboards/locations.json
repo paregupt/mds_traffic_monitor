@@ -1,92 +1,12 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_INFLUXDB",
-      "label": "InfluxDB",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "influxdb",
-      "pluginName": "InfluxDB"
-    },
-    {
-      "name": "VAR_DB",
-      "type": "constant",
-      "label": "Database",
-      "value": "telegraf",
-      "description": ""
-    },
-    {
-      "name": "VAR_RP",
-      "type": "constant",
-      "label": "Retention Policy",
-      "value": "autogen",
-      "description": ""
-    },
-    {
-      "name": "VAR_FC_DATA_RATE",
-      "type": "constant",
-      "label": "fc_data_rate",
-      "value": "0.85",
-      "description": ""
-    },
-    {
-      "name": "VAR_MIN_INTERVAL",
-      "type": "constant",
-      "label": "min_interval",
-      "value": "10",
-      "description": ""
-    },
-    {
-      "name": "VAR_MIN_INTERVAL_SUM",
-      "type": "constant",
-      "label": "min_interval_sum",
-      "value": "60",
-      "description": ""
-    }
-  ],
-  "__requires": [
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "7.3.6"
-    },
-    {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph",
-      "version": ""
-    },
-    {
-      "type": "datasource",
-      "id": "influxdb",
-      "name": "InfluxDB",
-      "version": "1.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "stat",
-      "name": "Stat",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "table",
-      "name": "Table",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "text",
-      "name": "Text",
-      "version": ""
-    }
-  ],
   "annotations": {
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -96,19 +16,15 @@
     ]
   },
   "editable": true,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": null,
-  "iteration": 1617471124211,
+  "id": 1,
   "links": [],
   "panels": [
     {
-      "datasource": "${DS_INFLUXDB}",
       "description": "",
       "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
+        "defaults": {},
         "overrides": []
       },
       "gridPos": {
@@ -119,56 +35,21 @@
       },
       "id": 2,
       "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
         "content": "<table style=\"margin: 0px; padding: 0px; border: 1px; border-collapse: collapse;\" width=\"100%\">\n<tbody>\n<tr style=\"margin: 0px; padding: 0px;\">\n<td style=\"width: 15%; margin: 0px; padding: 0px; border: none;\" valign=\"middle\"><img id='cisco_logo' style=\"display: block; margin-left: auto; margin-right: auto;\" src='/public/img/mtm/cisco_logo.png' width=\"90\" />\n</td>\n<td style=\"width: 70%; margin: 0px; padding: 0px; border: none;\">\n<h2 style=\"text-align: center; margin: 2px;\"><span style=\"color: #0085FC;\"><strong>MTM - MDS Traffic Monitoring - Locations (<span style=\"color: #ff00ff;\">$location</span>)</strong></span></h2>\n</td>\n<td style=\"width: 15%; margin: 0px; border: none;\" valign=\"middle\"><img id='your_logo' style=\"display: block; margin-left: auto; margin-right: auto;\" src='/public/img/mtm/your_logo.png' alt=\"\" width=\"90\"/>\n</td>\n</tr>\n</tbody>\n</table>",
         "mode": "html"
       },
-      "pluginVersion": "7.3.6",
-      "targets": [
-        {
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": []
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
+      "pluginVersion": "12.1.1",
       "title": "",
       "transparent": true,
       "type": "text"
     },
     {
       "collapsed": false,
-      "datasource": "${DS_INFLUXDB}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -181,10 +62,11 @@
       "type": "row"
     },
     {
-      "datasource": "$data_source",
+      "datasource": {
+        "uid": "$data_source"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "mappings": [],
           "noValue": "0",
           "thresholds": {
@@ -192,7 +74,7 @@
             "steps": [
               {
                 "color": "rgb(250, 0, 158)",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -206,13 +88,13 @@
         "y": 3
       },
       "id": 146,
-      "interval": "",
       "maxDataPoints": 1,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -220,12 +102,17 @@
           "fields": "",
           "values": false
         },
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "alias": "$col",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "groupBy": [
             {
               "params": [
@@ -263,16 +150,15 @@
           "tags": []
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "# Total Locations",
       "type": "stat"
     },
     {
-      "datasource": "$data_source",
+      "datasource": {
+        "uid": "$data_source"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "mappings": [],
           "noValue": "0",
           "thresholds": {
@@ -280,7 +166,7 @@
             "steps": [
               {
                 "color": "dark-orange",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -294,13 +180,13 @@
         "y": 3
       },
       "id": 145,
-      "interval": "",
       "maxDataPoints": 1,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -308,12 +194,17 @@
           "fields": "",
           "values": false
         },
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "alias": "$col",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "groupBy": [
             {
               "params": [
@@ -351,18 +242,22 @@
           "tags": []
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "# Switches in $location",
       "type": "stat"
     },
     {
-      "datasource": "$data_source",
+      "datasource": {
+        "uid": "$data_source"
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
             "align": "center",
-            "filterable": true
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -370,7 +265,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "red",
@@ -393,7 +288,7 @@
                   "steps": [
                     {
                       "color": "light-red",
-                      "value": null
+                      "value": 0
                     },
                     {
                       "color": "#7eb26d",
@@ -403,8 +298,11 @@
                 }
               },
               {
-                "id": "custom.displayMode",
-                "value": "color-background"
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
               },
               {
                 "id": "custom.width",
@@ -534,10 +432,17 @@
         "y": 3
       },
       "id": 100,
-      "interval": "",
-      "links": [],
       "maxDataPoints": 1,
       "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true,
         "sortBy": [
           {
@@ -546,9 +451,12 @@
           }
         ]
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
+          "datasource": {
+            "uid": "$data_source"
+          },
           "groupBy": [
             {
               "params": [
@@ -565,7 +473,7 @@
           ],
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT switchname as \"Switch Name\", location as \"Location\",description as \"Description\", oper_state as \"Operational State\", oper_mode as \"Oper Mode\", port_down_reason as \"Down Reason\", oper_speed as \"Speed (G)\", pc as \"Member of Port-Channel\", pwwn as \"PWWN\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"location\" =~ /^$location$/) AND  $timeFilter GROUP BY switch,switchport order by time desc limit 1",
+          "query": "SELECT switchname as \"Switch Name\", location as \"Location\",description as \"Description\", oper_state as \"Operational State\", oper_mode as \"Oper Mode\", port_down_reason as \"Down Reason\", oper_speed as \"Speed (G)\", pc as \"Member of Port-Channel\", pwwn as \"PWWN\", vsan as \"VSAN\", last_changed as \"Last status changed at\" FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"location\" =~ /^$location$/) AND  $timeFilter GROUP BY switch,switchport order by time desc limit 1",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "table",
@@ -586,8 +494,6 @@
           "tags": []
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Switch Port Inventory",
       "transformations": [
         {
@@ -627,10 +533,11 @@
       "type": "table"
     },
     {
-      "datasource": "$data_source",
+      "datasource": {
+        "uid": "$data_source"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "mappings": [],
           "noValue": "0",
           "thresholds": {
@@ -638,7 +545,7 @@
             "steps": [
               {
                 "color": "semi-dark-purple",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -652,13 +559,13 @@
         "y": 8
       },
       "id": 98,
-      "interval": "",
       "maxDataPoints": 1,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -666,12 +573,17 @@
           "fields": "",
           "values": false
         },
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "alias": "$col",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "groupBy": [
             {
               "params": [
@@ -709,16 +621,15 @@
           "tags": []
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "# FC Ports in $location",
       "type": "stat"
     },
     {
-      "datasource": "$data_source",
+      "datasource": {
+        "uid": "$data_source"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "mappings": [],
           "noValue": "0",
           "thresholds": {
@@ -726,7 +637,7 @@
             "steps": [
               {
                 "color": "dark-blue",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -740,13 +651,13 @@
         "y": 8
       },
       "id": 103,
-      "interval": "",
       "maxDataPoints": 1,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -754,12 +665,17 @@
           "fields": "",
           "values": false
         },
-        "textMode": "value"
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "alias": "$col",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "groupBy": [
             {
               "params": [
@@ -797,65 +713,101 @@
           "tags": []
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "# FC Port-Channel in $location",
       "type": "stat"
     },
     {
-      "aliasColors": {},
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "$data_source",
-      "decimals": 0,
+      "datasource": {
+        "uid": "$data_source"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
         },
         "overrides": []
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 6,
         "x": 0,
         "y": 12
       },
-      "hiddenSeries": false,
       "id": 94,
-      "interval": "",
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": false,
-      "linewidth": 1,
       "maxDataPoints": 10,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "alertThreshold": true,
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "7.3.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "alias": "$col",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "groupBy": [
             {
               "params": [
@@ -894,6 +846,9 @@
         },
         {
           "alias": "$col",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "groupBy": [
             {
               "params": [
@@ -931,108 +886,193 @@
           "tags": []
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "FC Port State",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1046",
-          "decimals": 0,
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:1047",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {
-        "Admin Down": "semi-dark-red",
-        "Link failure or not-connected": "light-orange",
-        "SFP not present": "light-yellow"
+      "datasource": {
+        "uid": "$data_source"
       },
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "$data_source",
-      "decimals": 0,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Admin Down"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "semi-dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Link failure or not-connected"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SFP not present"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Admin Down"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "semi-dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Link failure or not-connected"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SFP not present"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 6,
         "x": 6,
         "y": 12
       },
-      "hiddenSeries": false,
       "id": 152,
-      "interval": "",
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": false,
-      "linewidth": 1,
       "maxDataPoints": 10,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "alertThreshold": true,
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "7.3.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "alias": "$col",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "groupBy": [
             {
               "params": [
@@ -1071,6 +1111,9 @@
         },
         {
           "alias": "$col",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "groupBy": [
             {
               "params": [
@@ -1109,6 +1152,9 @@
         },
         {
           "alias": "$col",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "groupBy": [
             {
               "params": [
@@ -1147,6 +1193,9 @@
         },
         {
           "alias": "$col",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "groupBy": [
             {
               "params": [
@@ -1184,108 +1233,234 @@
           "tags": []
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "FC Port Down Reason",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1046",
-          "decimals": 0,
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": "0",
-          "show": true
-        },
-        {
-          "$$hashKey": "object:1047",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {
-        "16G": "rgb(169, 180, 99)",
-        "32G": "rgb(32, 159, 32)",
-        "8G": "rgb(0, 128, 150)"
+      "datasource": {
+        "uid": "$data_source"
       },
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "$data_source",
-      "decimals": 0,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "16G"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "rgb(169, 180, 99)",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "32G"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "rgb(32, 159, 32)",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "8G"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "rgb(0, 128, 150)",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "16G"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "rgb(169, 180, 99)",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "32G"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "rgb(32, 159, 32)",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "8G"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "rgb(0, 128, 150)",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 6,
         "x": 12,
         "y": 12
       },
-      "hiddenSeries": false,
       "id": 93,
-      "interval": "",
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": false,
-      "linewidth": 1,
       "maxDataPoints": 10,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "alertThreshold": true,
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "7.3.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "alias": "$col",
+          "datasource": {
+            "uid": "$data_source"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "select count(last) AS \"64G\" from (SELECT last(\"oper_speed\") FROM \"$db\".\"$rp\".\"SwitchPortStats\" WHERE (\"location\" =~ /^$location$/ AND \"pc\" != '' AND \"oper_speed\" = 64) and $timeFilter GROUP BY time($__interval),switch,switchport) where $timeFilter GROUP BY time($__interval)",
+          "rawQuery": true,
+          "refId": "G",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "$col",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "groupBy": [
             {
               "params": [
@@ -1324,6 +1499,9 @@
         },
         {
           "alias": "$col",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "groupBy": [
             {
               "params": [
@@ -1362,6 +1540,9 @@
         },
         {
           "alias": "$col",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "groupBy": [
             {
               "params": [
@@ -1400,6 +1581,9 @@
         },
         {
           "alias": "$col",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "groupBy": [
             {
               "params": [
@@ -1438,6 +1622,9 @@
         },
         {
           "alias": "$col",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "groupBy": [
             {
               "params": [
@@ -1476,6 +1663,9 @@
         },
         {
           "alias": "$col",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "groupBy": [
             {
               "params": [
@@ -1513,107 +1703,162 @@
           "tags": []
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "FC Port Speed",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1046",
-          "decimals": 0,
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:1047",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {
-        "F": "rgb(203, 255, 112)",
-        "TF": "rgb(248, 57, 255)"
+      "datasource": {
+        "uid": "$data_source"
       },
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "$data_source",
-      "decimals": 0,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "F"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "rgb(203, 255, 112)",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TF"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "rgb(248, 57, 255)",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "F"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "rgb(203, 255, 112)",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TF"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "rgb(248, 57, 255)",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 6,
         "x": 18,
         "y": 12
       },
-      "hiddenSeries": false,
       "id": 97,
-      "interval": "",
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": false,
-      "linewidth": 1,
       "maxDataPoints": 10,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "alertThreshold": true,
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "7.3.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
+      "pluginVersion": "12.1.1",
       "targets": [
         {
           "alias": "$col",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "groupBy": [
             {
               "params": [
@@ -1652,6 +1897,9 @@
         },
         {
           "alias": "$col",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "groupBy": [
             {
               "params": [
@@ -1690,6 +1938,9 @@
         },
         {
           "alias": "$col",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "groupBy": [
             {
               "params": [
@@ -1727,52 +1978,13 @@
           "tags": []
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "FC Port Mode",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1046",
-          "decimals": 0,
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:1047",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
-      "datasource": "$data_source",
+      "datasource": {
+        "uid": "$data_source"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1780,7 +1992,11 @@
           },
           "custom": {
             "align": "center",
-            "filterable": true
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -1788,7 +2004,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -1839,8 +2055,11 @@
                 "value": "percent"
               },
               {
-                "id": "custom.displayMode",
-                "value": "lcd-gauge"
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "lcd",
+                  "type": "gauge"
+                }
               },
               {
                 "id": "thresholds",
@@ -1849,7 +2068,7 @@
                   "steps": [
                     {
                       "color": "green",
-                      "value": null
+                      "value": 0
                     },
                     {
                       "color": "#EAB839",
@@ -1875,8 +2094,11 @@
                 "value": "s"
               },
               {
-                "id": "custom.displayMode",
-                "value": "gradient-gauge"
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "gauge"
+                }
               },
               {
                 "id": "color",
@@ -1916,10 +2138,17 @@
         "y": 17
       },
       "id": 148,
-      "interval": "",
-      "links": [],
       "maxDataPoints": 1,
       "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true,
         "sortBy": [
           {
@@ -1928,9 +2157,12 @@
           }
         ]
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "12.1.1",
       "targets": [
         {
+          "datasource": {
+            "uid": "$data_source"
+          },
           "groupBy": [
             {
               "params": [
@@ -1968,8 +2200,6 @@
           "tags": []
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Switch Inventory",
       "transformations": [
         {
@@ -2012,7 +2242,6 @@
     },
     {
       "collapsed": true,
-      "datasource": "${DS_INFLUXDB}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -2022,7 +2251,9 @@
       "id": 102,
       "panels": [
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "description": "",
           "fieldConfig": {
             "defaults": {
@@ -2033,8 +2264,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               },
@@ -2068,6 +2298,9 @@
           "targets": [
             {
               "alias": "$col",
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -2105,14 +2338,14 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "",
           "transparent": true,
           "type": "stat"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "description": "",
           "fieldConfig": {
             "defaults": {
@@ -2123,8 +2356,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               },
@@ -2158,6 +2390,9 @@
           "targets": [
             {
               "alias": "$col",
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -2195,14 +2430,14 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "",
           "transparent": true,
           "type": "stat"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "description": "",
           "fieldConfig": {
             "defaults": {
@@ -2213,8 +2448,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(51, 55, 238)",
-                    "value": null
+                    "color": "rgb(51, 55, 238)"
                   }
                 ]
               },
@@ -2248,6 +2482,9 @@
           "targets": [
             {
               "alias": "$col",
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -2285,14 +2522,14 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "",
           "transparent": true,
           "type": "stat"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "description": "",
           "fieldConfig": {
             "defaults": {
@@ -2303,8 +2540,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "light-red",
-                    "value": null
+                    "color": "light-red"
                   }
                 ]
               },
@@ -2338,6 +2574,9 @@
           "targets": [
             {
               "alias": "$col",
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -2375,14 +2614,14 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "",
           "transparent": true,
           "type": "stat"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -2398,8 +2637,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "#EAB839",
@@ -2420,8 +2658,11 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "lcd-gauge"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "lcd",
+                      "type": "gauge"
+                    }
                   },
                   {
                     "id": "min",
@@ -2503,6 +2744,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -2541,8 +2785,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Top 10 Utilized Ports - RX",
           "transformations": [
             {
@@ -2576,7 +2818,9 @@
           "type": "table"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -2592,8 +2836,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "#EAB839",
@@ -2614,8 +2857,11 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "lcd-gauge"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "lcd",
+                      "type": "gauge"
+                    }
                   },
                   {
                     "id": "min",
@@ -2660,8 +2906,7 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.width",
-                    "value": null
+                    "id": "custom.width"
                   },
                   {
                     "id": "links",
@@ -2697,6 +2942,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -2734,8 +2982,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Top 10 Utilized Ports  - TX",
           "transformations": [
             {
@@ -2770,7 +3016,9 @@
           "type": "table"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -2786,8 +3034,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "dark-purple",
-                    "value": null
+                    "color": "dark-purple"
                   },
                   {
                     "color": "#EAB839",
@@ -2808,8 +3055,11 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "gradient-gauge"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "gradient",
+                      "type": "gauge"
+                    }
                   },
                   {
                     "id": "min",
@@ -2887,6 +3137,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -2924,8 +3177,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Top 10 Congested Ports - TxWait",
           "transformations": [
             {
@@ -2960,7 +3211,9 @@
           "type": "table"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -2976,8 +3229,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(170, 153, 30)",
-                    "value": null
+                    "color": "rgb(170, 153, 30)"
                   }
                 ]
               }
@@ -2990,8 +3242,11 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "basic"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "gauge"
+                    }
                   }
                 ]
               },
@@ -3061,6 +3316,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -3098,8 +3356,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Top 10 Ports - CRC",
           "transformations": [
             {
@@ -3134,7 +3390,9 @@
           "type": "table"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "description": "",
           "fieldConfig": {
             "defaults": {
@@ -3145,8 +3403,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(255, 0, 191)",
-                    "value": null
+                    "color": "rgb(255, 0, 191)"
                   }
                 ]
               },
@@ -3180,6 +3437,9 @@
           "targets": [
             {
               "alias": "$col",
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -3217,14 +3477,14 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "",
           "transparent": true,
           "type": "stat"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "description": "",
           "fieldConfig": {
             "defaults": {
@@ -3235,8 +3495,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(255, 0, 191)",
-                    "value": null
+                    "color": "rgb(255, 0, 191)"
                   }
                 ]
               },
@@ -3270,6 +3529,9 @@
           "targets": [
             {
               "alias": "$col",
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -3307,14 +3569,14 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "",
           "transparent": true,
           "type": "stat"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "description": "",
           "fieldConfig": {
             "defaults": {
@@ -3325,8 +3587,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "semi-dark-purple",
-                    "value": null
+                    "color": "semi-dark-purple"
                   }
                 ]
               },
@@ -3360,6 +3621,9 @@
           "targets": [
             {
               "alias": "$col",
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -3397,14 +3661,14 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "",
           "transparent": true,
           "type": "stat"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "description": "",
           "fieldConfig": {
             "defaults": {
@@ -3415,8 +3679,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "semi-dark-purple",
-                    "value": null
+                    "color": "semi-dark-purple"
                   }
                 ]
               },
@@ -3450,6 +3713,9 @@
           "targets": [
             {
               "alias": "$col",
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -3487,14 +3753,14 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "",
           "transparent": true,
           "type": "stat"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -3510,8 +3776,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(170, 153, 30)",
-                    "value": null
+                    "color": "rgb(170, 153, 30)"
                   }
                 ]
               }
@@ -3524,8 +3789,11 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "gradient-gauge"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "gradient",
+                      "type": "gauge"
+                    }
                   }
                 ]
               },
@@ -3595,6 +3863,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -3632,8 +3903,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Top 10 Ports - FEC Corrected",
           "transformations": [
             {
@@ -3668,7 +3937,9 @@
           "type": "table"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -3684,8 +3955,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(170, 153, 30)",
-                    "value": null
+                    "color": "rgb(170, 153, 30)"
                   }
                 ]
               }
@@ -3698,8 +3968,11 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "gradient-gauge"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "gradient",
+                      "type": "gauge"
+                    }
                   }
                 ]
               },
@@ -3769,6 +4042,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -3806,8 +4082,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Top 10 Ports - FEC Uncorrected",
           "transformations": [
             {
@@ -3842,7 +4116,9 @@
           "type": "table"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -3858,8 +4134,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(170, 153, 30)",
-                    "value": null
+                    "color": "rgb(170, 153, 30)"
                   }
                 ]
               }
@@ -3872,8 +4147,11 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "gradient-gauge"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "gradient",
+                      "type": "gauge"
+                    }
                   }
                 ]
               },
@@ -3943,6 +4221,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -3980,8 +4261,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Top 10 Ports - TX B2B to 0",
           "transformations": [
             {
@@ -4016,7 +4295,9 @@
           "type": "table"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -4032,8 +4313,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(170, 153, 30)",
-                    "value": null
+                    "color": "rgb(170, 153, 30)"
                   }
                 ]
               }
@@ -4046,8 +4326,11 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "gradient-gauge"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "gradient",
+                      "type": "gauge"
+                    }
                   }
                 ]
               },
@@ -4117,6 +4400,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -4154,8 +4440,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Top 10 Ports - RX B2B to 0",
           "transformations": [
             {
@@ -4190,7 +4474,9 @@
           "type": "table"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -4206,8 +4492,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(170, 153, 30)",
-                    "value": null
+                    "color": "rgb(170, 153, 30)"
                   }
                 ]
               }
@@ -4220,8 +4505,11 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "gradient-gauge"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "gradient",
+                      "type": "gauge"
+                    }
                   },
                   {
                     "id": "unit",
@@ -4295,6 +4583,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -4332,8 +4623,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Hottest SFPs",
           "transformations": [
             {
@@ -4368,7 +4657,9 @@
           "type": "table"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -4384,8 +4675,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(170, 153, 30)",
-                    "value": null
+                    "color": "rgb(170, 153, 30)"
                   }
                 ]
               }
@@ -4398,8 +4688,11 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "gradient-gauge"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "gradient",
+                      "type": "gauge"
+                    }
                   },
                   {
                     "id": "unit",
@@ -4473,6 +4766,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -4510,8 +4806,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Coldest SFPs",
           "transformations": [
             {
@@ -4546,7 +4840,9 @@
           "type": "table"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -4562,8 +4858,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "light-red",
-                    "value": null
+                    "color": "light-red"
                   },
                   {
                     "color": "light-yellow",
@@ -4584,8 +4879,11 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "gradient-gauge"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "gradient",
+                      "type": "gauge"
+                    }
                   },
                   {
                     "id": "unit",
@@ -4659,6 +4957,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -4696,8 +4997,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Lowest SFP RX Power",
           "transformations": [
             {
@@ -4732,7 +5031,9 @@
           "type": "table"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -4748,8 +5049,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "light-red",
-                    "value": null
+                    "color": "light-red"
                   },
                   {
                     "color": "light-yellow",
@@ -4770,8 +5070,11 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "gradient-gauge"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "gradient",
+                      "type": "gauge"
+                    }
                   },
                   {
                     "id": "unit",
@@ -4845,6 +5148,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -4882,8 +5188,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Lowest SFP TX Power",
           "transformations": [
             {
@@ -4918,7 +5222,9 @@
           "type": "table"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "description": "",
           "fieldConfig": {
             "defaults": {
@@ -4929,8 +5235,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(144, 92, 0)",
-                    "value": null
+                    "color": "rgb(144, 92, 0)"
                   }
                 ]
               },
@@ -4964,6 +5269,9 @@
           "targets": [
             {
               "alias": "$col",
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -5001,14 +5309,14 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "",
           "transparent": true,
           "type": "stat"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "description": "",
           "fieldConfig": {
             "defaults": {
@@ -5019,8 +5327,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(254, 138, 150)",
-                    "value": null
+                    "color": "rgb(254, 138, 150)"
                   }
                 ]
               },
@@ -5054,6 +5361,9 @@
           "targets": [
             {
               "alias": "$col",
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -5091,14 +5401,14 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "",
           "transparent": true,
           "type": "stat"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "description": "",
           "fieldConfig": {
             "defaults": {
@@ -5109,8 +5419,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(254, 138, 150)",
-                    "value": null
+                    "color": "rgb(254, 138, 150)"
                   }
                 ]
               },
@@ -5144,6 +5453,9 @@
           "targets": [
             {
               "alias": "$col",
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -5181,14 +5493,14 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "",
           "transparent": true,
           "type": "stat"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "description": "",
           "fieldConfig": {
             "defaults": {
@@ -5199,8 +5511,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(195, 101, 41)",
-                    "value": null
+                    "color": "rgb(195, 101, 41)"
                   }
                 ]
               },
@@ -5234,6 +5545,9 @@
           "targets": [
             {
               "alias": "$col",
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -5271,14 +5585,14 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "",
           "transparent": true,
           "type": "stat"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -5294,8 +5608,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(170, 153, 30)",
-                    "value": null
+                    "color": "rgb(170, 153, 30)"
                   }
                 ]
               }
@@ -5308,8 +5621,11 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "gradient-gauge"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "gradient",
+                      "type": "gauge"
+                    }
                   }
                 ]
               },
@@ -5379,6 +5695,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -5416,8 +5735,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Top 10 Ports - Timeout Discard",
           "transformations": [
             {
@@ -5452,7 +5769,9 @@
           "type": "table"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -5468,8 +5787,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(170, 153, 30)",
-                    "value": null
+                    "color": "rgb(170, 153, 30)"
                   }
                 ]
               }
@@ -5482,8 +5800,11 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "gradient-gauge"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "gradient",
+                      "type": "gauge"
+                    }
                   }
                 ]
               },
@@ -5553,6 +5874,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -5590,8 +5914,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Top 10 Ports - RX Discard",
           "transformations": [
             {
@@ -5626,7 +5948,9 @@
           "type": "table"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -5642,8 +5966,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(170, 153, 30)",
-                    "value": null
+                    "color": "rgb(170, 153, 30)"
                   }
                 ]
               }
@@ -5656,8 +5979,11 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "gradient-gauge"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "gradient",
+                      "type": "gauge"
+                    }
                   }
                 ]
               },
@@ -5727,6 +6053,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -5764,8 +6093,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Top 10 Ports - TX Discard",
           "transformations": [
             {
@@ -5800,7 +6127,9 @@
           "type": "table"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -5816,8 +6145,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(170, 153, 30)",
-                    "value": null
+                    "color": "rgb(170, 153, 30)"
                   }
                 ]
               }
@@ -5830,8 +6158,11 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "gradient-gauge"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "gradient",
+                      "type": "gauge"
+                    }
                   }
                 ]
               },
@@ -5901,6 +6232,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -5938,8 +6272,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Top 10 Ports - ITW",
           "transformations": [
             {
@@ -5974,7 +6306,9 @@
           "type": "table"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "description": "",
           "fieldConfig": {
             "defaults": {
@@ -5985,8 +6319,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "dark-yellow",
-                    "value": null
+                    "color": "dark-yellow"
                   }
                 ]
               },
@@ -6020,6 +6353,9 @@
           "targets": [
             {
               "alias": "$col",
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -6057,14 +6393,14 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "",
           "transparent": true,
           "type": "stat"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "description": "",
           "fieldConfig": {
             "defaults": {
@@ -6075,8 +6411,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(190, 183, 76)",
-                    "value": null
+                    "color": "rgb(190, 183, 76)"
                   }
                 ]
               },
@@ -6110,6 +6445,9 @@
           "targets": [
             {
               "alias": "$col",
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -6147,14 +6485,14 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "",
           "transparent": true,
           "type": "stat"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "description": "",
           "fieldConfig": {
             "defaults": {
@@ -6165,8 +6503,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "dark-orange",
-                    "value": null
+                    "color": "dark-orange"
                   }
                 ]
               },
@@ -6200,6 +6537,9 @@
           "targets": [
             {
               "alias": "$col",
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -6237,14 +6577,14 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "",
           "transparent": true,
           "type": "stat"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "description": "",
           "fieldConfig": {
             "defaults": {
@@ -6255,8 +6595,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(223, 0, 255)",
-                    "value": null
+                    "color": "rgb(223, 0, 255)"
                   }
                 ]
               },
@@ -6290,6 +6629,9 @@
           "targets": [
             {
               "alias": "$col",
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -6327,14 +6669,14 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "",
           "transparent": true,
           "type": "stat"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "description": "",
           "fieldConfig": {
             "defaults": {
@@ -6345,8 +6687,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(223, 0, 255)",
-                    "value": null
+                    "color": "rgb(223, 0, 255)"
                   }
                 ]
               },
@@ -6380,6 +6721,9 @@
           "targets": [
             {
               "alias": "$col",
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -6417,14 +6761,14 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "",
           "transparent": true,
           "type": "stat"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "description": "",
           "fieldConfig": {
             "defaults": {
@@ -6435,8 +6779,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(255, 107, 114)",
-                    "value": null
+                    "color": "rgb(255, 107, 114)"
                   }
                 ]
               },
@@ -6470,6 +6813,9 @@
           "targets": [
             {
               "alias": "$col",
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -6507,14 +6853,14 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "",
           "transparent": true,
           "type": "stat"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "description": "",
           "fieldConfig": {
             "defaults": {
@@ -6525,8 +6871,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(255, 107, 114)",
-                    "value": null
+                    "color": "rgb(255, 107, 114)"
                   }
                 ]
               },
@@ -6560,6 +6905,9 @@
           "targets": [
             {
               "alias": "$col",
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -6597,14 +6945,14 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "",
           "transparent": true,
           "type": "stat"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -6620,8 +6968,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "semi-dark-yellow",
-                    "value": null
+                    "color": "semi-dark-yellow"
                   }
                 ]
               }
@@ -6634,8 +6981,10 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "color-text"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-text"
+                    }
                   }
                 ]
               },
@@ -6656,8 +7005,7 @@
                     ]
                   },
                   {
-                    "id": "custom.width",
-                    "value": null
+                    "id": "custom.width"
                   }
                 ]
               },
@@ -6705,6 +7053,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -6742,8 +7093,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Top 10 Ports - Link Failure",
           "transformations": [
             {
@@ -6778,7 +7127,9 @@
           "type": "table"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -6794,8 +7145,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "super-light-yellow",
-                    "value": null
+                    "color": "super-light-yellow"
                   }
                 ]
               }
@@ -6808,8 +7158,10 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "color-text"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-text"
+                    }
                   }
                 ]
               },
@@ -6879,6 +7231,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -6916,8 +7271,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Top 10 Ports - Signal Loss",
           "transformations": [
             {
@@ -6952,7 +7305,9 @@
           "type": "table"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -6968,8 +7323,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "dark-orange",
-                    "value": null
+                    "color": "dark-orange"
                   }
                 ]
               }
@@ -6982,8 +7336,10 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "color-text"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-text"
+                    }
                   }
                 ]
               },
@@ -7053,6 +7409,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -7090,8 +7449,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Top 10 Ports - Sync Loss",
           "transformations": [
             {
@@ -7126,7 +7483,9 @@
           "type": "table"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -7142,8 +7501,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(223, 0, 255)",
-                    "value": null
+                    "color": "rgb(223, 0, 255)"
                   }
                 ]
               }
@@ -7156,8 +7514,10 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "color-text"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-text"
+                    }
                   }
                 ]
               },
@@ -7227,6 +7587,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -7264,8 +7627,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Top 10 Ports - RX Link Reset",
           "transformations": [
             {
@@ -7300,7 +7661,9 @@
           "type": "table"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -7316,8 +7679,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(223, 0, 255)",
-                    "value": null
+                    "color": "rgb(223, 0, 255)"
                   }
                 ]
               }
@@ -7330,8 +7692,10 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "color-text"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-text"
+                    }
                   }
                 ]
               },
@@ -7413,6 +7777,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -7450,8 +7817,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Top 10 Ports - TX Link Reset",
           "transformations": [
             {
@@ -7486,7 +7851,9 @@
           "type": "table"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -7502,8 +7869,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(255, 107, 114)",
-                    "value": null
+                    "color": "rgb(255, 107, 114)"
                   }
                 ]
               }
@@ -7516,8 +7882,10 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "color-text"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-text"
+                    }
                   }
                 ]
               },
@@ -7599,6 +7967,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -7636,8 +8007,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Top 10 Ports - RX Link Reset Response",
           "transformations": [
             {
@@ -7672,7 +8041,9 @@
           "type": "table"
         },
         {
-          "datasource": "$data_source",
+          "datasource": {
+            "uid": "$data_source"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -7688,8 +8059,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(255, 107, 114)",
-                    "value": null
+                    "color": "rgb(255, 107, 114)"
                   }
                 ]
               }
@@ -7702,8 +8072,10 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "color-text"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-text"
+                    }
                   }
                 ]
               },
@@ -7785,6 +8157,9 @@
           "pluginVersion": "7.3.6",
           "targets": [
             {
+              "datasource": {
+                "uid": "$data_source"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -7822,8 +8197,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Top 10 Ports - TX Link Reset Response",
           "transformations": [
             {
@@ -7862,101 +8235,72 @@
       "type": "row"
     }
   ],
-  "refresh": false,
-  "schemaVersion": 26,
-  "style": "dark",
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 41,
   "tags": [],
   "templating": {
     "list": [
       {
         "current": {
-          "value": "${VAR_DB}",
-          "text": "${VAR_DB}",
-          "selected": false
+          "text": "telegraf",
+          "value": "telegraf"
         },
-        "error": null,
         "hide": 2,
         "label": "Database",
         "name": "db",
-        "options": [
-          {
-            "value": "${VAR_DB}",
-            "text": "${VAR_DB}",
-            "selected": false
-          }
-        ],
-        "query": "${VAR_DB}",
-        "skipUrlSync": false,
+        "query": "telegraf",
+        "skipUrlSync": true,
         "type": "constant"
       },
       {
         "current": {
-          "value": "${VAR_RP}",
-          "text": "${VAR_RP}",
-          "selected": false
+          "text": "autogen",
+          "value": "autogen"
         },
-        "error": null,
         "hide": 2,
         "label": "Retention Policy",
         "name": "rp",
-        "options": [
-          {
-            "value": "${VAR_RP}",
-            "text": "${VAR_RP}",
-            "selected": false
-          }
-        ],
-        "query": "${VAR_RP}",
-        "skipUrlSync": false,
+        "query": "autogen",
+        "skipUrlSync": true,
         "type": "constant"
       },
       {
         "current": {
-          "selected": false,
-          "text": "InfluxDB",
-          "value": "InfluxDB"
+          "text": "influxdb",
+          "value": "cevtbx1dkaxhce"
         },
-        "error": null,
-        "hide": 0,
         "includeAll": false,
         "label": "Data Source",
-        "multi": false,
         "name": "data_source",
         "options": [],
         "query": "influxdb",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "type": "datasource"
       },
       {
         "current": {
-          "value": "${VAR_FC_DATA_RATE}",
-          "text": "${VAR_FC_DATA_RATE}",
-          "selected": false
+          "text": "0.85",
+          "value": "0.85"
         },
-        "error": null,
         "hide": 2,
-        "label": null,
         "name": "fc_data_rate",
-        "options": [
-          {
-            "value": "${VAR_FC_DATA_RATE}",
-            "text": "${VAR_FC_DATA_RATE}",
-            "selected": false
-          }
-        ],
-        "query": "${VAR_FC_DATA_RATE}",
-        "skipUrlSync": false,
+        "query": "0.85",
+        "skipUrlSync": true,
         "type": "constant"
       },
       {
-        "allValue": null,
-        "current": {},
+        "current": {
+          "text": [
+            "US"
+          ],
+          "value": [
+            "US"
+          ]
+        },
         "datasource": "$data_source",
         "definition": "",
-        "error": null,
-        "hide": 0,
         "includeAll": true,
         "label": "Location",
         "multi": true,
@@ -7965,100 +8309,60 @@
         "query": "show tag values from \"$db\".\"$rp\".\"Switches\" with key=location where $timeFilter",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "type": "query"
       },
       {
         "current": {
-          "value": "${VAR_MIN_INTERVAL}",
-          "text": "${VAR_MIN_INTERVAL}",
-          "selected": false
+          "text": "10",
+          "value": "10"
         },
-        "error": null,
         "hide": 2,
-        "label": null,
         "name": "min_interval",
-        "options": [
-          {
-            "value": "${VAR_MIN_INTERVAL}",
-            "text": "${VAR_MIN_INTERVAL}",
-            "selected": false
-          }
-        ],
-        "query": "${VAR_MIN_INTERVAL}",
-        "skipUrlSync": false,
+        "query": "10",
+        "skipUrlSync": true,
         "type": "constant"
       },
       {
-        "allValue": null,
-        "current": {},
+        "current": {
+          "text": "1",
+          "value": "1"
+        },
         "datasource": "$data_source",
         "definition": "",
-        "error": null,
         "hide": 2,
         "includeAll": false,
-        "label": null,
-        "multi": false,
         "name": "num_locations",
         "options": [],
         "query": " SHOW TAG VALUES CARDINALITY FROM \"$db\".\"$rp\".\"Switches\" WITH KEY=location",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "type": "query"
       },
       {
-        "allValue": null,
-        "current": {},
+        "current": {
+          "text": "2",
+          "value": "2"
+        },
         "datasource": "$data_source",
         "definition": "",
-        "error": null,
         "hide": 2,
         "includeAll": false,
-        "label": null,
-        "multi": false,
         "name": "num_switches",
         "options": [],
         "query": " SHOW TAG VALUES CARDINALITY FROM \"$db\".\"$rp\".\"Switches\" WITH KEY=switch",
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "type": "query"
       },
       {
         "current": {
-          "value": "${VAR_MIN_INTERVAL_SUM}",
-          "text": "${VAR_MIN_INTERVAL_SUM}",
-          "selected": false
+          "text": "60",
+          "value": "60"
         },
-        "error": null,
         "hide": 2,
-        "label": null,
         "name": "min_interval_sum",
-        "options": [
-          {
-            "value": "${VAR_MIN_INTERVAL_SUM}",
-            "text": "${VAR_MIN_INTERVAL_SUM}",
-            "selected": false
-          }
-        ],
-        "query": "${VAR_MIN_INTERVAL_SUM}",
-        "skipUrlSync": false,
+        "query": "60",
+        "skipUrlSync": true,
         "type": "constant"
       }
     ]
@@ -8071,5 +8375,5 @@
   "timezone": "",
   "title": "MTM - Locations",
   "uid": "i56djUbMz",
-  "version": 67
+  "version": 3
 }
