@@ -76,3 +76,6 @@ I haven't written detailed installation instructions yet. Nor do I have an OVA. 
 
 ## Looking for something similar to monitor Cisco UCS Servers?
 [Click here to check out Cisco UCS Traffic Monitoring (UTM)](https://github.com/paregupt/ucs_traffic_monitor).
+
+## Looking for something similar to monitor Cisco Nexus Switches?
+[Click here to check out Nexus Traffic Monitoring (NTM)](https://github.com/paregupt/nexus_traffic_monitor/).
