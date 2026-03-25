@@ -3,8 +3,8 @@
 desired output format"""
 
 __author__ = "Paresh Gupta"
-__version__ = "0.20"
-__updated__ = "22-Aug-2025-6-PM-PDT"
+__version__ = "0.21"
+__updated__ = "24-Mar-2026-12-PM-PDT"
 
 import sys
 import os
@@ -289,6 +289,24 @@ def print_output_in_influxdb_lp(switch_ip, per_switch_stats_dict):
 
         for key, val in sorted((per_port_dict['data']).items()):
             sep = ' ' if port_fields == '' else ','
+            '''
+            Some transceivers show NA. Skip these:
+            a-mds110# show interface fc9/12 transceiver detail
+        ----------------------------------------------------------------------------
+                                   Alarms                  Warnings
+                              High        Low         High          Low
+        ----------------------------------------------------------------------------
+        Temperature        NA         NA          NA          NA            NA
+        Voltage            NA         NA          NA          NA            NA
+        Current            NA         NA          NA          NA            NA
+        Tx Power           NA         NA          NA          NA            NA
+        Rx Power           NA         NA          NA          NA            NA
+        Transmit Fault Count  : NA
+            '''
+            if key in ('sfp_current', 'sfp_rx_pwr', 'sfp_temperature', \
+                        'sfp_tx_pwr', 'sfp_voltage'):
+                if 'NA' in str(val):
+                    continue
             if key in ('description', 'pwwn', 'port_down_reason', \
                        'last_changed'):
                 port_fields = port_fields + sep + key + '="' + str(val) + '"'
